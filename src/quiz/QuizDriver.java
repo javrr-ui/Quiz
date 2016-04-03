@@ -12,7 +12,7 @@
 //////////////////////////// 80 columns wide/////////////////////////////////
 package quiz;
 
-public class QuizDriver {
+public final class QuizDriver {
     
     private QuizDriver(){
     }

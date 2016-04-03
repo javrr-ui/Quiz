@@ -1,17 +1,20 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package quiz.utils;
 
 /**
+ * Utilities Class
  *
- * @author Administrador
+ * @author Javatlacati
  */
 public class Util {
-    //workaround for mutiple varargs
-    public static <T> T[] varargs (T...myVararg) {
+
+    /**
+     * Workaround for mutiple varargs.
+     *
+     * @param <T> Data Type
+     * @param myVararg variable arguments
+     * @return A vararg!
+     */
+    public static <T> T[] varargs(final T... myVararg) {
         return myVararg;
     }
 }
