@@ -1,2 +1,0 @@
-quiz.Question
-quiz.Gradable
