@@ -64,31 +64,28 @@ public class Quiz {
         addMultipleChoiceQuestion(questions, Question.VETTED,
                 "Multiple choice: What is Barack Obama known for?",
                 createAnswerChoicesMap(
-                        Util.varargs("Really likes the show Narcos", "He's the president, dude", "Doesn’t actually like mac and cheese"),
+                        Util.varargs("Really likes the show Narcos",
+                                "He's the president, dude",
+                                "Doesn’t actually like mac and cheese"),
                         Util.varargs(false, true, false)
                 )
         );
 
-        //Question 4. Vetted.
-        MultipleAnswerQuestion question4 = new MultipleAnswerQuestion("vetted");
-        question4.setText("Multiple answer (more than one possible): What days are not work days?");
-        question4.setChoice("Monday", false);
-        question4.setChoice("Tuesday", false);
-        question4.setChoice("Wednesday", false);
-        question4.setChoice("Thursday", false);
-        question4.setChoice("Friday", false);
-        question4.setChoice("Saturday", true);
-        question4.setChoice("Sunday", true);
-        questions.add(question4);
+        addMultipleAnswerQuestion(questions, Question.VETTED,
+                "Multiple answer (more than one possible): What days are not work days?",
+                createAnswerChoicesMap(
+                        Util.varargs("Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"),
+                        Util.varargs(false, false, false, false, false, true, true)
+                )
+        );
 
-        //Question 5. Trial.
-        MultipleAnswerQuestion question5 = new MultipleAnswerQuestion("trial");
-        question5.setText("Multiple answer (more than one possible): What words begin with the letter \"a\"?");
-        question5.setChoice("apple", true);
-        question5.setChoice("chair", false);
-        question5.setChoice("astronomy", true);
-        question5.setChoice("desk", false);
-        questions.add(question5);
+        addMultipleAnswerQuestion(questions, Question.TRIAL,
+                "Multiple answer (more than one possible): What words begin with the letter \"a\"?",
+                createAnswerChoicesMap(
+                        Util.varargs("apple", "chair", "astronomy", "desk"),
+                        Util.varargs(true, false, true, false)
+                )
+        );
 
         //Question 6. Vetted.
         MultipleAnswerQuestion question6 = new MultipleAnswerQuestion("vetted");
@@ -237,6 +234,17 @@ public class Quiz {
     }
 
     private void addMultipleChoiceQuestion(final List<Question> questions,
+            final String vettedness, final String questionText,
+            final Map<String, Boolean> answerChoicesMap) {
+        final MultipleChoiceQuestion choiceQuestion = new MultipleChoiceQuestion(vettedness);
+        choiceQuestion.setText(questionText);
+        answerChoicesMap.entrySet().stream().forEach((choiceEntry) -> {
+            choiceQuestion.setChoice(choiceEntry.getKey(), choiceEntry.getValue());
+        });
+        questions.add(choiceQuestion);
+    }
+
+    private void addMultipleAnswerQuestion(final List<Question> questions,
             final String vettedness, final String questionText,
             final Map<String, Boolean> answerChoicesMap) {
         final MultipleChoiceQuestion choiceQuestion = new MultipleChoiceQuestion(vettedness);
