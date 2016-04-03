@@ -255,6 +255,9 @@ public class Quiz {
         if (numsOfAnswers != answerValidities.length) {
             throw new RuntimeException("Anwer texts whould match answr values one by one");
         }
+        for (int answIdx = 0; answIdx < answerTexts.length; answIdx++) {
+            hashMap.put(answerTexts[answIdx], answerValidities[answIdx]);
+        }
         return hashMap;
     }
 
