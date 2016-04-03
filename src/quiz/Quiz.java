@@ -8,11 +8,13 @@
 //
 // Description of Program’s Functionality: 
 //////////////////////////// 80 columns wide/////////////////////////////////
-
 package quiz;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Scanner;
+import quiz.utils.Util;
 
 public class Quiz {
 
@@ -21,13 +23,13 @@ public class Quiz {
     private double score = 0.0;
     private double vettedScore = 0.0;
     private double trialScore = 0.0;
-    
+
     private int totalVetted = 0;
     private int totalTrial = 0;
-    
+
     private int totalCorrectVetted = 0;
     private int totalIncorrectVetted = 0;
-    
+
     private int totalCorrectTrial = 0;
     private int totalIncorrectTrial = 0;
 
@@ -39,14 +41,14 @@ public class Quiz {
      * Create the questions of the quiz. 10 Questions.
      */
     public void createQuestions() {
-
-        //Question 1. Vetted.
-        MultipleChoiceQuestion question1 = new MultipleChoiceQuestion("vetted");
-        question1.setText("Multiple choice: What is the first month of the year?");
-        question1.setChoice("January", true);
-        question1.setChoice("February", false);
-        question1.setChoice("March", false);
-        questions.add(question1);
+//Question 1. Vetted.
+        addMultipleChoiceQuestion(questions, "vetted",
+                "Multiple choice: What is the first month of the year?",
+                createAnswerChoicesMap(
+                        Util.varargs("January", "February", "March"),
+                        Util.varargs(true, false, false)
+                )
+        );
 
         //Question 2. Trial.
         MultipleChoiceQuestion question2 = new MultipleChoiceQuestion("trial");
@@ -124,7 +126,7 @@ public class Quiz {
     }
 
     /**
-     * Display a message. Display the questions. Get input. Check if 
+     * Display a message. Display the questions. Get input. Check if
      * correct/gradable and notify user of points earned.
      */
     public void displayAndCheckQuestions() {
@@ -149,30 +151,30 @@ public class Quiz {
             System.out.println("Enter your answers in order separated by spaces");
             Scanner in = new Scanner(System.in);
             input = in.nextLine();
-            
+
             //Print line
             System.out.println();
-            
+
             //Show user points earned for answer
             System.out.println("You received " + questions.get(i).checkQuestion(input) + " points.");
-            
+
             //Add points to total score
             score += questions.get(i).checkQuestion(input);
-            
+
             //Show user total points earned
-            System.out.println("Total points: "+score+"\n");
-            
+            System.out.println("Total points: " + score + "\n");
+
             //Was the answer vetted/trial and correct, partially correct, or incorrect?
             int compare;
-            
+
             if (questions.get(i).gradeQuestion()) { //Question is vetted
-                
+
                 //Count vetted questions
                 totalVetted++;
-                
+
                 //Add to vetted score
                 vettedScore += questions.get(i).checkQuestion(input);
-                
+
                 //Was question correct, partially corrct, or incorrct?
                 compare = Double.compare(questions.get(i).checkQuestion(input), 0.0);
                 if (compare > 0) {
@@ -184,13 +186,13 @@ public class Quiz {
                 }
 
             } else { //Question is trial
-                
+
                 //Count trial questions
                 totalTrial++;
-                
+
                 //Add to trial score
                 trialScore += questions.get(i).checkQuestion(input);
-                
+
                 //Was question correct, partially correct, or incorrect?
                 compare = Double.compare(questions.get(i).checkQuestion(input), 0.0);
                 if (compare > 0) {
@@ -206,36 +208,54 @@ public class Quiz {
         }
 
     }
-    
+
     /**
-     * Report total questions, vetted questions, and trial questions.
-     * Report score earned for each.
-     * Report questions answered correctly or partially correctly for each.
-     * Report questions answered incorrectly for each.
+     * Report total questions, vetted questions, and trial questions. Report
+     * score earned for each. Report questions answered correctly or partially
+     * correctly for each. Report questions answered incorrectly for each.
      */
-    
     public void summarizeResults() {
-        int totalCorrect = totalCorrectVetted+totalCorrectTrial;
-        int totalIncorrect = totalIncorrectVetted+totalIncorrectTrial;
-        
-        System.out.println("There were a total of "+questions.size()+" questions.");
-        System.out.println("You received a total of "+score+" points.");
-        System.out.println("Answered "+totalCorrect+" for full or partial credit");
-        System.out.println("Answered " +totalIncorrect+" for no credit");
+        int totalCorrect = totalCorrectVetted + totalCorrectTrial;
+        int totalIncorrect = totalIncorrectVetted + totalIncorrectTrial;
+
+        System.out.println("There were a total of " + questions.size() + " questions.");
+        System.out.println("You received a total of " + score + " points.");
+        System.out.println("Answered " + totalCorrect + " for full or partial credit");
+        System.out.println("Answered " + totalIncorrect + " for no credit");
         System.out.println();
-        
-        System.out.println("There were "+totalVetted+" vetted questions.");
-        System.out.println("You received a total of "+vettedScore+" points on them.");
-        System.out.println("Answered "+totalCorrectVetted+" for full or partial credit");
-        System.out.println("Answered " +totalIncorrectVetted+" for no credit");
+
+        System.out.println("There were " + totalVetted + " vetted questions.");
+        System.out.println("You received a total of " + vettedScore + " points on them.");
+        System.out.println("Answered " + totalCorrectVetted + " for full or partial credit");
+        System.out.println("Answered " + totalIncorrectVetted + " for no credit");
         System.out.println();
-        
-        System.out.println("There were "+totalTrial+" trial questions.");
-        System.out.println("You received a total of "+trialScore+" points on them.");
-        System.out.println("Answered "+totalCorrectTrial+" for full or partial credit");
-        System.out.println("Answered " +totalIncorrectTrial+" for no credit");
-        
+
+        System.out.println("There were " + totalTrial + " trial questions.");
+        System.out.println("You received a total of " + trialScore + " points on them.");
+        System.out.println("Answered " + totalCorrectTrial + " for full or partial credit");
+        System.out.println("Answered " + totalIncorrectTrial + " for no credit");
+
         System.out.println("Have a wonderful day.");
+    }
+
+    private void addMultipleChoiceQuestion(ArrayList<Question> questions, String vettedness, String questionText, Map<String, Boolean> answerChoicesMap) {
+        MultipleChoiceQuestion question1 = new MultipleChoiceQuestion(vettedness);
+        question1.setText(questionText);
+        for (Map.Entry<String, Boolean> choiceEntry : answerChoicesMap.entrySet()) {
+            String choiceText = choiceEntry.getKey();
+            Boolean answerValue = choiceEntry.getValue();
+            question1.setChoice(choiceText, answerValue);
+        }
+        questions.add(question1);
+    }
+
+    private Map<String, Boolean> createAnswerChoicesMap(String[] answerTexts, Boolean[] answerValidities) {
+        HashMap<String, Boolean> hashMap = new HashMap<>();
+        int numsOfAnswers = answerTexts.length;
+        if (numsOfAnswers != answerValidities.length) {
+            throw new RuntimeException("Anwer texts whould match answr values one by one");
+        }
+        return hashMap;
     }
 
 }

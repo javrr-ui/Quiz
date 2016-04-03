@@ -15,10 +15,10 @@ package quiz;
 
 public class QuizDriver {
 
-    public static void main(String[] args) {
+    public static void main(final String[] args) {
 
         //Create new quiz
-        Quiz doom = new Quiz();
+        final Quiz doom = new Quiz();
 
         //Create quiz questions
         doom.createQuestions();
