@@ -49,29 +49,20 @@ public class Quiz {
      */
     public void createQuestions() {
         addMultipleChoiceQuestion(questions, Question.VETTED,
-                "Multiple choice: What is the first month of the year?",
-                createAnswerChoicesMap(
-                        Util.varargs("January", "February", "March"),
-                        Util.varargs(true, false, false)
-                )
+                "Multiple choice: What is the first month of the year?", 0,
+                "January", "February", "March"
         );
 
         addMultipleChoiceQuestion(questions, Question.TRIAL,
-                "Multiple choice: What is an apple product?",
-                createAnswerChoicesMap(
-                        Util.varargs("ipod", "zune", "lenovo"),
-                        Util.varargs(true, false, false)
-                )
+                "Multiple choice: What is an apple product?", 1,
+                "ipod", "zune", "lenovo"
         );
 
         addMultipleChoiceQuestion(questions, Question.VETTED,
-                "Multiple choice: What is Barack Obama known for?",
-                createAnswerChoicesMap(
-                        Util.varargs("Really likes the show Narcos",
-                                "He's the president, dude",
-                                "Doesn't actually like mac and cheese"),
-                        Util.varargs(false, true, false)
-                )
+                "Multiple choice: What is Barack Obama known for?", 1,
+                "Really likes the show Narcos",
+                "He's the president, dude",
+                "Doesn't actually like mac and cheese"
         );
 
         addMultipleAnswerQuestion(questions, Question.VETTED,
@@ -98,11 +89,8 @@ public class Quiz {
         );
 
         addMultipleChoiceQuestion(questions, Question.VETTED,
-                "Multiple choice: What's the answer, bro?",
-                createAnswerChoicesMap(
-                        Util.varargs("The answer", "Not the answer", "Also not the answer"),
-                        Util.varargs(true, false, false)
-                )
+                "Multiple choice: What's the answer, bro?", 0,
+                "The answer", "Not the answer", "Also not the answer"
         );
 
         addFillBlankQuestion(questions, Question.VETTED,
@@ -231,13 +219,18 @@ public class Quiz {
     }
 
     private void addMultipleChoiceQuestion(final List<Question> questions,
-            final String vettedness, final String questionText,
-            final Map<String, Boolean> answerChoicesMap) {
+            final String vettedness, final String questionText, final int correctAnswerIdx,
+            final String... answersTexts) {
         final MultipleChoiceQuestion choiceQuestion = new MultipleChoiceQuestion(vettedness);
         choiceQuestion.setText(questionText);
-        answerChoicesMap.entrySet().stream().forEach((choiceEntry) -> {
-            choiceQuestion.setChoice(choiceEntry.getKey(), choiceEntry.getValue());
-        });
+        for (int i = 0; i < answersTexts.length; i++) {
+            final String answerText = answersTexts[i];
+            if (i == correctAnswerIdx) {
+                choiceQuestion.setChoice(answerText, true);
+            } else {
+                choiceQuestion.setChoice(answerText, false);
+            }
+        }
         questions.add(choiceQuestion);
     }
 

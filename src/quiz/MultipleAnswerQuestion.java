@@ -86,6 +86,7 @@ public class MultipleAnswerQuestion extends MultipleChoiceQuestion {
         return grade;
     }
     
+    @Override
     public String display(){
 
         String display = text+"\n";

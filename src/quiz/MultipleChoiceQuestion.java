@@ -8,7 +8,6 @@
 //
 // Description of Program’s Functionality: 
 //////////////////////////// 80 columns wide/////////////////////////////////
-
 package quiz;
 
 import java.util.ArrayList;
@@ -47,12 +46,14 @@ public class MultipleChoiceQuestion extends Question {
 
     /**
      * Sets the correct answer. A number in a string.
-     * @param answer a number in a string that corresponds to the answers place in the choices arrayList
+     *
+     * @param answer a number in a string that corresponds to the answers place
+     * in the choices arrayList
      */
     public void setAnswer(String answer) {
         this.answer = answer;
     }
-    
+
 //    /**
 //     * Takes an answer from input
 //     */
@@ -63,10 +64,9 @@ public class MultipleChoiceQuestion extends Question {
 //        input = in.nextLine();
 //        return checkAnswer(input);
 //    }
-
     public double checkQuestion(String answer) {
-        answer = answer.replaceAll("\\s+","");
-        if(this.answer.equals(answer)){
+        answer = answer.replaceAll("\\s+", "");
+        if (this.answer.equals(answer)) {
             return 1.0;
         } else {
             return 0.0;
@@ -75,18 +75,20 @@ public class MultipleChoiceQuestion extends Question {
 
     /**
      * Returns a string with the question text and choices
+     *
      * @return string with question text and choice
      */
+    @Override
     public String display() {
-        
-        String display = text+"\n";
-        
+
+        String display = text + "\n";
+
         for (int i = 0; i < choices.size(); i++) {
             int choiceNumber = i + 1;
-            display = display.concat(choiceNumber + ": " + choices.get(i)+"\n");
+            display = display.concat(choiceNumber + ": " + choices.get(i) + "\n");
         }
-        
+
         return display;
     }
-    
+
 }

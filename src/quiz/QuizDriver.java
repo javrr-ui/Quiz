@@ -12,28 +12,25 @@
 //////////////////////////// 80 columns wide/////////////////////////////////
 package quiz;
 
+/**
+ * Program that administers a quiz consisting of multiple choice, multiple
+ * answer, and fill-in-the-blank questions written for Programming 2 (Java)
+ */
 public final class QuizDriver {
-    
-    private QuizDriver(){
+
+    private QuizDriver() {
     }
 
     /**
      * Application entry point
      *
-     * @param args program arguments ( actually they are nor parsed )
+     * @param args program arguments ( actually they are not parsed )
      */
     public static void main(final String... args) {
-
-        //Create new quiz
         final Quiz doom = new Quiz();
-
-        //Create quiz questions
         doom.createQuestions();
-
         //Display questions to user, receive and check response
         doom.displayAndCheckQuestions();
-
-        //Summarize results
         doom.summarizeResults();
 
     }

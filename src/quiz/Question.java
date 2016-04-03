@@ -23,6 +23,7 @@ abstract public class Question {
     protected String text;
     protected String answer;
     protected String vettedOrTrial;
+    protected String category;
 
     /**
      * Constructs a question with empty question and answer
@@ -31,6 +32,7 @@ abstract public class Question {
 //        text = "";//only necessary for Java 5 where default value for String variable at class scope was null instead of ""
 //        answer = "";
         vettedOrTrial = vettedness;
+        category = "default";
     }
 
     /**
@@ -44,6 +46,7 @@ abstract public class Question {
 
     /**
      * Sets the correct answer(s)
+     * @param answer answer text
      */
     public abstract void setAnswer(String answer);
 
@@ -53,7 +56,9 @@ abstract public class Question {
 //     */
 //    public abstract double checkAnswer(String answer);
     /**
-     * Returns the question text
+     * Show question Text
+     *
+     * @return question text
      */
     public String display() {
         return text;
