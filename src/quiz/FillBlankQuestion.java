@@ -27,17 +27,27 @@ public class FillBlankQuestion extends Question {
     public void setAnswer(final String answer) {
         correctAnswers.add(answer);
     }
+    
+    @Override
+    public String getAnswer() {
+        return Arrays.toString(correctAnswers.toArray());
+    }
 
     @Override
-    public double checkQuestion(String answer) {
-        final String delims = "[ ]+";
-        final String[] tokens = answer.split(delims);
+    public double checkQuestionProvidingAnswer(final String daAnswer) {
+        userAnswer=daAnswer;
+        return checkQuestion();
+    }
+    String delims = "[ ]+";
+    @Override
+    public double checkQuestion() {
+        final String[] tokens = this.userAnswer.split(delims);
 
-        ArrayList<String> answers = new ArrayList<>(tokens.length);
+        final ArrayList<String> answers = new ArrayList<>(tokens.length);
         answers.addAll(Arrays.asList(tokens));
 
-        double totRightAnswers = correctAnswers.size();
-        double totAnswers = tokens.length;
+        final double totRightAnswers = correctAnswers.size();
+        //final double totAnswers = tokens.length;
         double grade = 0.0;
 
         for (int i = 0; i < answers.size(); i++) {
@@ -47,5 +57,10 @@ public class FillBlankQuestion extends Question {
         }
 
         return grade;
+    }
+
+    @Override
+    double getMaxPoints() {
+        return correctAnswers.size();
     }
 }

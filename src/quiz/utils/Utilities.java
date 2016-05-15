@@ -5,7 +5,7 @@ package quiz.utils;
  *
  * @author Javatlacati
  */
-public class Util {
+public final class Utilities {
 
     /**
      * Workaround for mutiple varargs.

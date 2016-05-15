@@ -1,13 +1,3 @@
-///////////////////////////////////////////////////////////////////////////////                  
-// Title:            Quiz
-// Files:            
-// Semester:         COP3337 Fall 2015
-//
-// Author:           3587814
-// Lecturer's Name:  Prof. Maria Charters
-//
-// Description of Program’s Functionality: 
-//////////////////////////// 80 columns wide/////////////////////////////////
 package quiz;
 
 interface Gradable {
@@ -15,6 +5,10 @@ interface Gradable {
     public boolean gradeQuestion();
 }
 
+/**
+ * @author NicolasADavid
+ * @author Javatlacati
+ */
 abstract public class Question {
 
     public static final String VETTED = "vetted";
@@ -22,11 +16,15 @@ abstract public class Question {
 
     protected String text;
     protected String answer;
+    protected String userAnswer;
     protected String vettedOrTrial;
     protected String category;
+    protected int difficulty;
 
     /**
      * Constructs a question with empty question and answer
+     *
+     * @param vettedness
      */
     public Question(String vettedness) {
 //        text = "";//only necessary for Java 5 where default value for String variable at class scope was null instead of ""
@@ -46,9 +44,12 @@ abstract public class Question {
 
     /**
      * Sets the correct answer(s)
+     *
      * @param answer answer text
      */
     public abstract void setAnswer(String answer);
+
+    public abstract String getAnswer();
 
 //    /**
 //     * Checks the answer(s)
@@ -68,6 +69,17 @@ abstract public class Question {
         return vettedOrTrial.equals(VETTED);
     }
 
-    public abstract double checkQuestion(String answer);
+    public abstract double checkQuestionProvidingAnswer(final String answer);
+
+    public double checkQuestion() {
+        if (userAnswer != null && userAnswer.equals(answer)) {
+            return 1.0;
+        } else {
+            //TODO tal vez aquí llamar a checkQuestionProvidingAnswer para llenar
+            return 0.0;
+        }
+    }
+
+    abstract double getMaxPoints();
 
 }

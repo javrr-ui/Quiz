@@ -1,1 +1,6 @@
+LawOfDemeter
+UseUtilityClass
+CommentSize
+SystemPrintln
+DataflowAnomalyAnalysis
 AvoidThrowingRawExceptionTypes

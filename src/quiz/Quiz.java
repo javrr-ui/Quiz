@@ -1,13 +1,3 @@
-///////////////////////////////////////////////////////////////////////////////                  
-// Title:            Quiz
-// Files:            
-// Semester:         COP3337 Fall 2015
-//
-// Author:           3587814
-// Lecturer's Name:  Prof. Maria Charters
-//
-// Description of Program’s Functionality: 
-//////////////////////////// 80 columns wide/////////////////////////////////
 package quiz;
 
 import java.util.ArrayList;
@@ -15,26 +5,55 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
-import quiz.utils.Util;
+import quiz.utils.Utilities;
 
 /**
  * Represents a Quiz
+ *
+ * @author NicolasADavid
+ * @author Javatlacati
  */
 public class Quiz {
 
+    /**
+     *
+     */
     private List<Question> questions;
-
+    /**
+     * Score obtained in the quiz.
+     */
     private double score;
+    /**
+     * Mandatory questions.
+     */
     private double vettedScore;
+    /**
+     * Optional questions.
+     */
     private double trialScore;
-
+    /**
+     * Number of vetted questions asked.
+     */
     private int totalVetted;
+    /**
+     * Number of trial questions asked.
+     */
     private int totalTrial;
-
+    /**
+     *
+     */
     private int totalCorrectVetted;
+    /**
+     *
+     */
     private int totalIncorrectVetted;
-
+    /**
+     *
+     */
     private int totalCorrectTrial;
+    /**
+     *
+     */
     private int totalIncorrectTrial;
 
     /**
@@ -45,7 +64,7 @@ public class Quiz {
     }
 
     /**
-     * Creates the questions of the quiz. 10 Questions.
+     * Creates the questions of the quiz.
      */
     public void createQuestions() {
         addMultipleChoiceQuestion(questions, Question.VETTED,
@@ -54,7 +73,7 @@ public class Quiz {
         );
 
         addMultipleChoiceQuestion(questions, Question.TRIAL,
-                "Multiple choice: What is an apple product?", 1,
+                "Multiple choice: What is an apple product?", 0,
                 "ipod", "zune", "lenovo"
         );
 
@@ -67,24 +86,21 @@ public class Quiz {
 
         addMultipleAnswerQuestion(questions, Question.VETTED,
                 "Multiple answer (more than one possible): What days are not work days?",
-                createAnswerChoicesMap(
-                        Util.varargs("Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"),
-                        Util.varargs(false, false, false, false, false, true, true)
+                createAnswerChoicesMap(Utilities.varargs("Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"),
+                        Utilities.varargs(false, false, false, false, false, true, true)
                 )
         );
 
         addMultipleAnswerQuestion(questions, Question.TRIAL,
                 "Multiple answer (more than one possible): What words begin with the letter \"a\"?",
-                createAnswerChoicesMap(
-                        Util.varargs("apple", "chair", "astronomy", "desk"),
-                        Util.varargs(true, false, true, false)
+                createAnswerChoicesMap(Utilities.varargs("apple", "chair", "astronomy", "desk"),
+                        Utilities.varargs(true, false, true, false)
                 )
         );
         addMultipleAnswerQuestion(questions, Question.VETTED,
                 "Multiple answer (more than one possible): What are common household chores?",
-                createAnswerChoicesMap(
-                        Util.varargs("sweeping", "laundry", "skydiving", "basket weaving"),
-                        Util.varargs(true, true, false, false)
+                createAnswerChoicesMap(Utilities.varargs("sweeping", "laundry", "skydiving", "basket weaving"),
+                        Utilities.varargs(true, true, false, false)
                 )
         );
 
@@ -125,21 +141,26 @@ public class Quiz {
         System.out.println(message);
         final Scanner scanner = new Scanner(System.in);
         //For every question in questions
-        for (int i = 0; i < questions.size(); i++) {
+        final int numQuestions = questions.size();
+        for (int i = 0; i < numQuestions; i++) {
             final Question currentQuestion = questions.get(i);
 
             //Display the question
-            System.out.println(questions.get(i).display());
+            System.out.println(currentQuestion.display());
 
+            System.out.println("Enter your answers in order separated by spaces \n");
             //Take input
             final String input = scanner.nextLine();
-            System.out.println("Enter your answers in order separated by spaces \n");
 
             //Show user points earned for answer
-            System.out.println("You received " + questions.get(i).checkQuestion(input) + " points.");
+            // TODO perhaps instead of 
+            //currentQuestion.checkQuestionProvidingAnswer(input) userAnswer
+            //could be just setted
+            System.out.println("You received " + currentQuestion.checkQuestionProvidingAnswer(input) + " points.");
 
             //Add points to total score
-            score += currentQuestion.checkQuestion(input);
+            final double puntosRespuesta = currentQuestion.checkQuestion();
+            score += puntosRespuesta;
 
             //Show user total points earned
             System.out.println("Total points: " + score + "\n");
@@ -153,10 +174,10 @@ public class Quiz {
                 totalVetted++;
 
                 //Add to vetted score
-                vettedScore += currentQuestion.checkQuestion(input);
+                vettedScore += puntosRespuesta;
 
                 //Was question correct, partially corrct, or incorrct?
-                compare = Double.compare(currentQuestion.checkQuestion(input), 0.0);
+                compare = Double.compare(puntosRespuesta, 0.0);
                 if (compare > 0) {
                     //Count correct/partial vetted
                     totalCorrectVetted++;
@@ -171,10 +192,10 @@ public class Quiz {
                 totalTrial++;
 
                 //Add to trial score
-                trialScore += currentQuestion.checkQuestion(input);
+                trialScore += puntosRespuesta;
 
                 //Was question correct, partially correct, or incorrect?
-                compare = Double.compare(currentQuestion.checkQuestion(input), 0.0);
+                compare = Double.compare(puntosRespuesta, 0.0);
                 if (compare > 0) {
                     //Count correct/partial trial
                     totalCorrectTrial++;
@@ -215,9 +236,12 @@ public class Quiz {
         System.out.println("Answered " + totalCorrectTrial + " for full or partial credit");
         System.out.println("Answered " + totalIncorrectTrial + " for no credit");
 
-        System.out.println("Have a wonderful day.");
+        System.out.println("Have a wonderful day.\n");
     }
 
+    /**
+     *
+     */
     private void addMultipleChoiceQuestion(final List<Question> questions,
             final String vettedness, final String questionText, final int correctAnswerIdx,
             final String... answersTexts) {
@@ -234,6 +258,9 @@ public class Quiz {
         questions.add(choiceQuestion);
     }
 
+    /**
+     *
+     */
     private void addMultipleAnswerQuestion(final List<Question> questions,
             final String vettedness, final String questionText,
             final Map<String, Boolean> answerChoicesMap) {
@@ -245,6 +272,9 @@ public class Quiz {
         questions.add(choiceQuestion);
     }
 
+    /**
+     *
+     */
     private void addFillBlankQuestion(final List<Question> questions,
             final String vettedness, final String questionText, final String... blanks) {
         final FillBlankQuestion fillBlankQuestion = new FillBlankQuestion(vettedness);
@@ -255,10 +285,13 @@ public class Quiz {
         questions.add(fillBlankQuestion);
     }
 
-    private Map<String, Boolean> createAnswerChoicesMap(final String[] answerTexts, final Boolean[] answerValidities) {
+    /**
+     *
+     */
+    private Map<String, Boolean> createAnswerChoicesMap(final String[] answerTexts, final Boolean... answerValidities) {
         final int numsOfAnswers = answerTexts.length;
         if (numsOfAnswers != answerValidities.length) {
-            throw new RuntimeException("Answer texts should match answr values one by one");
+            throw new RuntimeException("Answer texts should match answer values one by one");
         }
         final HashMap<String, Boolean> hashMap = new HashMap<>();
         for (int answIdx = 0; answIdx < answerTexts.length; answIdx++) {
@@ -267,6 +300,24 @@ public class Quiz {
         return hashMap;
     }
 
+    /**
+     * Prints again failed questions showing also their correct answers
+     */
+    public void showFailed() {
+        System.out.println("Failed Questions:\n");
+        for (int i = 0; i < questions.size(); i++) {
+            final Question currentQuestion = questions.get(i);
+            final double points = currentQuestion.checkQuestion();
+            if (points < currentQuestion.getMaxPoints()) {
+                //Show user points earned for incorrect answer
+                System.out.println(questions.get(i).display());
+                System.out.println("You received " + points + " points.");
+                System.out.println("Correct answer was:" + questions.get(i).getAnswer() + "\n");
+            }
+        }
+    }
+
+    /////////////////// setters/getters  //////////////////////
     public List<Question> getQuestions() {
         return questions;
     }

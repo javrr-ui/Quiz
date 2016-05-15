@@ -39,7 +39,7 @@ public class MultipleChoiceQuestion extends Question {
         choices.add(choice);
         if (correct) {
             // Convert choices.size() to string
-            String choiceString = "" + choices.size();
+            String choiceString = "" + (choices.size());
             setAnswer(choiceString);
         }
     }
@@ -50,8 +50,15 @@ public class MultipleChoiceQuestion extends Question {
      * @param answer a number in a string that corresponds to the answers place
      * in the choices arrayList
      */
+    @Override
     public void setAnswer(String answer) {
         this.answer = answer;
+        correctAnswer = choices.indexOf(answer);
+    }
+
+    @Override
+    public String getAnswer() {
+        return answer;
     }
 
 //    /**
@@ -64,15 +71,12 @@ public class MultipleChoiceQuestion extends Question {
 //        input = in.nextLine();
 //        return checkAnswer(input);
 //    }
-    public double checkQuestion(String answer) {
-        answer = answer.replaceAll("\\s+", "");
-        if (this.answer.equals(answer)) {
-            return 1.0;
-        } else {
-            return 0.0;
-        }
+    @Override
+    public double checkQuestionProvidingAnswer(final String answer) {
+        userAnswer = answer.replaceAll("\\s+", "");
+        return checkQuestion();
     }
-
+    
     /**
      * Returns a string with the question text and choices
      *
@@ -89,6 +93,11 @@ public class MultipleChoiceQuestion extends Question {
         }
 
         return display;
+    }
+
+    @Override
+    double getMaxPoints() {
+        return 1.0;
     }
 
 }
