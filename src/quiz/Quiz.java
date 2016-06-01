@@ -1,10 +1,21 @@
 package quiz;
 
+import com.sun.org.apache.bcel.internal.generic.F2D;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import quiz.utils.Utilities;
 
 /**
@@ -40,11 +51,11 @@ public class Quiz {
      */
     private int totalTrial;
     /**
-     *
+     * Number of vetted questions answered correcly.
      */
     private int totalCorrectVetted;
     /**
-     *
+     * Number of vetted questions not answered correcly.
      */
     private int totalIncorrectVetted;
     /**
@@ -125,6 +136,30 @@ public class Quiz {
         );
     }
 
+    public void createQuestionsFromFile() {
+        URL rutaArchivo =  Thread.currentThread().getContextClassLoader().getResource("quiz/resources/SampleQuiz.txt");
+        BufferedReader br = null;
+        try {
+            br = new BufferedReader(new FileReader(new File(rutaArchivo.toURI())));
+            String thisLine = null;
+            while ((thisLine = br.readLine()) != null) {
+                parseaPregunta(thisLine);
+            }
+        } catch (FileNotFoundException ex) {
+            Logger.getLogger(Quiz.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (URISyntaxException | IOException ex) {
+            Logger.getLogger(Quiz.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            if (br != null) {
+                try {
+                    br.close();
+                } catch (IOException ex) {
+                    Logger.getLogger(Quiz.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+        }
+    }
+
     /**
      * Display a message. Display the questions. Get input. Check if
      * correct/gradable and notify user of points earned.
@@ -153,7 +188,7 @@ public class Quiz {
             final String input = scanner.nextLine();
 
             //Show user points earned for answer
-            // TODO perhaps instead of 
+            //TODO perhaps instead of 
             //currentQuestion.checkQuestionProvidingAnswer(input) userAnswer
             //could be just setted
             System.out.println("You received " + currentQuestion.checkQuestionProvidingAnswer(input) + " points.");
@@ -219,22 +254,22 @@ public class Quiz {
         final int totalCorrect = totalCorrectVetted + totalCorrectTrial;
         final int totalIncorrect = totalIncorrectVetted + totalIncorrectTrial;
 
-        System.out.println("There were a total of " + questions.size() + " questions.");
-        System.out.println("You received a total of " + score + " points.");
-        System.out.println("Answered " + totalCorrect + " for full or partial credit");
-        System.out.println("Answered " + totalIncorrect + " for no credit");
+        System.out.printf("There were a total of %d questions.", questions.size());
+        System.out.printf("You received a total of %f points.", score);
+        System.out.printf("Answered %d for full or partial credit", totalCorrect);
+        System.out.printf("Answered %d for no credit", totalIncorrect);
         System.out.println();
 
         System.out.println("There were " + totalVetted + " vetted questions.");
         System.out.println("You received a total of " + vettedScore + " points on them.");
-        System.out.println("Answered " + totalCorrectVetted + " for full or partial credit");
-        System.out.println("Answered " + totalIncorrectVetted + " for no credit");
+        System.out.printf("Answered %d for full or partial credit", totalCorrectVetted);
+        System.out.printf("Answered  %d for no credit", totalIncorrectVetted);
         System.out.println();
 
-        System.out.println("There were " + totalTrial + " trial questions.");
-        System.out.println("You received a total of " + trialScore + " points on them.");
-        System.out.println("Answered " + totalCorrectTrial + " for full or partial credit");
-        System.out.println("Answered " + totalIncorrectTrial + " for no credit");
+        System.out.printf("There were %d trial questions.", totalTrial);
+        System.out.printf("You received a total of %f points on them.", trialScore);
+        System.out.printf("Answered %d for full or partial credit", totalCorrectTrial);
+        System.out.printf("Answered %d for no credit", totalIncorrectTrial);
 
         System.out.println("Have a wonderful day.\n");
     }
@@ -396,6 +431,21 @@ public class Quiz {
 
     public void setTotalIncorrectTrial(final int totalIncorrectTrial) {
         this.totalIncorrectTrial = totalIncorrectTrial;
+    }
+
+    private void parseaPregunta(String questionString) {
+        String[] questarray = questionString.split(",");
+        String tipoPregunta = questarray[0];
+        switch (tipoPregunta) {
+            case "MC":
+                addMultipleChoiceQuestion(questions, questarray[1] == "v" ? Question.VETTED : Question.TRIAL,
+                        questarray[2], Integer.valueOf(questarray[3]), Arrays.copyOfRange(questarray, 4, questarray.length));
+                break;
+            default:
+                System.err.println("Question type not supported");
+                break;
+        }
+
     }
 
 }
