@@ -1,6 +1,5 @@
 package quiz;
 
-import com.sun.org.apache.bcel.internal.generic.F2D;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -136,13 +135,16 @@ public class Quiz {
         );
     }
 
+    /**
+     * Reads a file and call the method that processes it to fill the quiz.
+     */
     public void createQuestionsFromFile() {
-        URL rutaArchivo =  Thread.currentThread().getContextClassLoader().getResource("quiz/resources/SampleQuiz.txt");
-        BufferedReader br = null;
+        final URL rutaArchivo = Thread.currentThread().getContextClassLoader().getResource("quiz/resources/SampleQuiz.txt");
+        BufferedReader reader = null;
         try {
-            br = new BufferedReader(new FileReader(new File(rutaArchivo.toURI())));
+            reader = new BufferedReader(new FileReader(new File(rutaArchivo.toURI())));
             String thisLine = null;
-            while ((thisLine = br.readLine()) != null) {
+            while ((thisLine = reader.readLine()) != null) {
                 parseaPregunta(thisLine);
             }
         } catch (FileNotFoundException ex) {
@@ -150,9 +152,9 @@ public class Quiz {
         } catch (URISyntaxException | IOException ex) {
             Logger.getLogger(Quiz.class.getName()).log(Level.SEVERE, null, ex);
         } finally {
-            if (br != null) {
+            if (reader != null) {
                 try {
-                    br.close();
+                    reader.close();
                 } catch (IOException ex) {
                     Logger.getLogger(Quiz.class.getName()).log(Level.SEVERE, null, ex);
                 }
@@ -275,7 +277,7 @@ public class Quiz {
     }
 
     /**
-     *
+     * Adds a new multiple choice question to the specified question list.
      */
     private void addMultipleChoiceQuestion(final List<Question> questions,
             final String vettedness, final String questionText, final int correctAnswerIdx,
@@ -433,14 +435,19 @@ public class Quiz {
         this.totalIncorrectTrial = totalIncorrectTrial;
     }
 
-    private void parseaPregunta(String questionString) {
-        String[] questarray = questionString.split(",");
+    /**
+     * @param questionString the question fields split by @@
+     */
+    private void parseaPregunta(final String questionString) {
+        final String[] questarray = questionString.split("@@");
         String tipoPregunta = questarray[0];
         switch (tipoPregunta) {
-            case "MC":
-                addMultipleChoiceQuestion(questions, questarray[1] == "v" ? Question.VETTED : Question.TRIAL,
+            case "MC"://multiple choice
+                addMultipleChoiceQuestion(questions, "v".equals(questarray[1]) ? Question.VETTED : Question.TRIAL,
                         questarray[2], Integer.valueOf(questarray[3]), Arrays.copyOfRange(questarray, 4, questarray.length));
                 break;
+            case "FB"://fill in the blanks
+                addFillBlankQuestion(questions, questarray[1] == "v" ? Question.VETTED : Question.TRIAL, questarray[2], Arrays.copyOfRange(questarray, 3, questarray.length));
             default:
                 System.err.println("Question type not supported");
                 break;
