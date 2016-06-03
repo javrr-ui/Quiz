@@ -15,6 +15,7 @@ import java.util.Map;
 import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 import quiz.utils.Utilities;
 
 /**
@@ -449,11 +450,22 @@ public class Quiz {
             case "FB"://fill in the blanks
                 addFillBlankQuestion(questions, questarray[1] == "v" ? Question.VETTED : Question.TRIAL, questarray[2], Arrays.copyOfRange(questarray, 3, questarray.length));
                 break;
+            case "MA":
+                addMultipleAnswerQuestion(questions, questarray[1] == "v" ? Question.VETTED : Question.TRIAL, questarray[2],
+                        parseChoicesMap(Arrays.copyOfRange(questarray, 3, questarray.length)));
+                break;
             default:
                 System.err.println("Question type not supported");
                 break;
         }
 
+    }
+    public Map<String,Boolean> parseChoicesMap(final String... questionMapArr){
+        String[]questarray=Arrays.copyOfRange(questionMapArr, 0, questionMapArr.length/2);
+        String[] strAnswerValidities=Arrays.copyOfRange(questionMapArr, questionMapArr.length/2,questionMapArr.length);
+        Boolean[] answerValidities=new Boolean[strAnswerValidities.length];
+        Arrays.stream(strAnswerValidities).map((x)->x.equalsIgnoreCase("true")?Boolean.TRUE:Boolean.FALSE).collect(Collectors.toList()).toArray(answerValidities);
+        return createAnswerChoicesMap(questarray, answerValidities);
     }
 
 }
