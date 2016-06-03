@@ -454,13 +454,13 @@ public class Quiz {
         switch (tipoPregunta) {
             case "MC"://multiple choice
                 addMultipleChoiceQuestion(questions, questarray[1] == "v" ? Question.VETTED : Question.TRIAL,
-                        questarray[2], Integer.valueOf(questarray[3]), Arrays.copyOfRange(questarray, 4, questarray.length));
+                        formateaPregunta(questarray[2]), Integer.valueOf(questarray[3]), Arrays.copyOfRange(questarray, 4, questarray.length));
                 break;
             case "FB"://fill in the blanks
-                addFillBlankQuestion(questions, questarray[1] == "v" ? Question.VETTED : Question.TRIAL, questarray[2], Arrays.copyOfRange(questarray, 3, questarray.length));
+                addFillBlankQuestion(questions, questarray[1] == "v" ? Question.VETTED : Question.TRIAL, formateaPregunta(questarray[2]), Arrays.copyOfRange(questarray, 3, questarray.length));
                 break;
             case "MA":
-                addMultipleAnswerQuestion(questions, questarray[1] == "v" ? Question.VETTED : Question.TRIAL, questarray[2],
+                addMultipleAnswerQuestion(questions, questarray[1] == "v" ? Question.VETTED : Question.TRIAL, formateaPregunta(questarray[2]),
                         parseChoicesMap(Arrays.copyOfRange(questarray, 3, questarray.length)));
                 break;
             default:
@@ -475,6 +475,10 @@ public class Quiz {
         Boolean[] answerValidities=new Boolean[strAnswerValidities.length];
         Arrays.stream(strAnswerValidities).map((x)->x.equalsIgnoreCase("true")?Boolean.TRUE:Boolean.FALSE).collect(Collectors.toList()).toArray(answerValidities);
         return createAnswerChoicesMap(questarray, answerValidities);
+    }
+    
+    private String formateaPregunta(String strPregunta){
+        return strPregunta.replaceAll("\\n", "\n");
     }
 
 }
