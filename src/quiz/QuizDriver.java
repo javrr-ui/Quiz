@@ -24,7 +24,7 @@ public final class QuizDriver {
     public static void main(final String... args) {
         final Quiz doom = new Quiz();
         //doom.createQuestions();
-        doom.createQuestionsFromFile();
+        doom.createQuestionsFromFile("quiz/resources/SampleQuiz.txt",true);
         //Display questions to user, receive and check response
         doom.displayAndCheckQuestions();
         doom.summarizeResults();

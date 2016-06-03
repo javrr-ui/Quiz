@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -16,7 +17,6 @@ import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
-import quiz.utils.Utilities;
 
 /**
  * Represents a Quiz
@@ -139,8 +139,17 @@ public class Quiz {
     /**
      * Reads a file and call the method that processes it to fill the quiz.
      */
-    public void createQuestionsFromFile() {
-        final URL rutaArchivo = Thread.currentThread().getContextClassLoader().getResource("quiz/resources/SampleQuiz.txt");
+    public void createQuestionsFromFile(String path,boolean isInJar) {
+        final URL rutaArchivo;
+        if(isInJar){
+            rutaArchivo=Thread.currentThread().getContextClassLoader().getResource(path);
+        }else{
+            try {
+                rutaArchivo=new File(path).toURI().toURL();
+            } catch (MalformedURLException ex) {
+                return;
+            }
+        }
         BufferedReader reader = null;
         try {
             reader = new BufferedReader(new FileReader(new File(rutaArchivo.toURI())));
