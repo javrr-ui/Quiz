@@ -76,7 +76,7 @@ public class MultipleChoiceQuestion extends Question {
         userAnswer = answer.replaceAll("\\s+", "");
         return checkQuestion();
     }
-    
+
     /**
      * Returns a string with the question text and choices
      *
@@ -95,6 +95,9 @@ public class MultipleChoiceQuestion extends Question {
         return display;
     }
 
+    /**
+     * {@inheritDoc }
+     */
     @Override
     double getMaxPoints() {
         return 1.0;

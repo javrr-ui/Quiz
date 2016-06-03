@@ -80,6 +80,7 @@ abstract public class Question {
         }
     }
 
+    /**Maximum number of point that can be awarded by this question.*/
     abstract double getMaxPoints();
 
 }

@@ -76,7 +76,7 @@ public class Quiz {
     /**
      * Creates the questions of the quiz.
      */
-    public void createQuestions() {
+  /*  public void createQuestions() {
         addMultipleChoiceQuestion(questions, Question.VETTED,
                 "Multiple choice: What is the first month of the year?", 0,
                 "January", "February", "March"
@@ -133,7 +133,7 @@ public class Quiz {
                 "Fill in the blank: This assignment is for a _________ course.",
                 "programming"
         );
-    }
+    }*/
 
     /**
      * Reads a file and call the method that processes it to fill the quiz.
@@ -257,19 +257,19 @@ public class Quiz {
         final int totalIncorrect = totalIncorrectVetted + totalIncorrectTrial;
 
         System.out.printf("There were a total of %d questions.", questions.size());
-        System.out.printf("You received a total of %f points.", score);
+        System.out.printf("You received a total of %.2f points.", score);
         System.out.printf("Answered %d for full or partial credit", totalCorrect);
         System.out.printf("Answered %d for no credit", totalIncorrect);
         System.out.println();
 
         System.out.println("There were " + totalVetted + " vetted questions.");
-        System.out.println("You received a total of " + vettedScore + " points on them.");
+        System.out.printf("You received a total of %.2f points on them.\n",vettedScore);
         System.out.printf("Answered %d for full or partial credit", totalCorrectVetted);
         System.out.printf("Answered  %d for no credit", totalIncorrectVetted);
         System.out.println();
 
         System.out.printf("There were %d trial questions.", totalTrial);
-        System.out.printf("You received a total of %f points on them.", trialScore);
+        System.out.printf("You received a total of %.2f points on them.", trialScore);
         System.out.printf("Answered %d for full or partial credit", totalCorrectTrial);
         System.out.printf("Answered %d for no credit", totalIncorrectTrial);
 
@@ -443,11 +443,12 @@ public class Quiz {
         String tipoPregunta = questarray[0];
         switch (tipoPregunta) {
             case "MC"://multiple choice
-                addMultipleChoiceQuestion(questions, "v".equals(questarray[1]) ? Question.VETTED : Question.TRIAL,
+                addMultipleChoiceQuestion(questions, questarray[1] == "v" ? Question.VETTED : Question.TRIAL,
                         questarray[2], Integer.valueOf(questarray[3]), Arrays.copyOfRange(questarray, 4, questarray.length));
                 break;
             case "FB"://fill in the blanks
                 addFillBlankQuestion(questions, questarray[1] == "v" ? Question.VETTED : Question.TRIAL, questarray[2], Arrays.copyOfRange(questarray, 3, questarray.length));
+                break;
             default:
                 System.err.println("Question type not supported");
                 break;

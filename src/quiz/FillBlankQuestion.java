@@ -27,7 +27,7 @@ public class FillBlankQuestion extends Question {
     public void setAnswer(final String answer) {
         correctAnswers.add(answer);
     }
-    
+
     @Override
     public String getAnswer() {
         return Arrays.toString(correctAnswers.toArray());
@@ -35,10 +35,11 @@ public class FillBlankQuestion extends Question {
 
     @Override
     public double checkQuestionProvidingAnswer(final String daAnswer) {
-        userAnswer=daAnswer;
+        userAnswer = daAnswer;
         return checkQuestion();
     }
     String delims = "[ ]+";
+
     @Override
     public double checkQuestion() {
         final String[] tokens = this.userAnswer.split(delims);
@@ -59,8 +60,11 @@ public class FillBlankQuestion extends Question {
         return grade;
     }
 
+    /**
+     * {@inheritDoc }
+     */
     @Override
-    double getMaxPoints() {
-        return correctAnswers.size();
+    protected double getMaxPoints() {
+        return 1;
     }
 }
