@@ -10,6 +10,7 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -77,7 +78,7 @@ public class Quiz {
     /**
      * Creates the questions of the quiz.
      */
-  /*  public void createQuestions() {
+    /*  public void createQuestions() {
         addMultipleChoiceQuestion(questions, Question.VETTED,
                 "Multiple choice: What is the first month of the year?", 0,
                 "January", "February", "March"
@@ -135,17 +136,16 @@ public class Quiz {
                 "programming"
         );
     }*/
-
     /**
      * Reads a file and call the method that processes it to fill the quiz.
      */
-    public void createQuestionsFromFile(String path,boolean isInJar) {
+    public void createQuestionsFromFile(String path, boolean isInJar) {
         final URL rutaArchivo;
-        if(isInJar){
-            rutaArchivo=Thread.currentThread().getContextClassLoader().getResource(path);
-        }else{
+        if (isInJar) {
+            rutaArchivo = Thread.currentThread().getContextClassLoader().getResource(path);
+        } else {
             try {
-                rutaArchivo=new File(path).toURI().toURL();
+                rutaArchivo = new File(path).toURI().toURL();
             } catch (MalformedURLException ex) {
                 return;
             }
@@ -184,7 +184,7 @@ public class Quiz {
                 + "your choice.\nFor multiple answer questions, enter the number(s) "
                 + "of your choice(s) separated by space.\nFor Fill in the blank"
                 + " questions enter your answer(s) separated by spaces.\n";
-
+        Collections.shuffle(questions);//pregunta aleatoriamente
         System.out.println(message);
         final Scanner scanner = new Scanner(System.in);
         //For every question in questions
@@ -273,7 +273,7 @@ public class Quiz {
         System.out.println();
 
         System.out.println("There were " + totalVetted + " vetted questions.");
-        System.out.printf("You received a total of %.2f points on them.\n",vettedScore);
+        System.out.printf("You received a total of %.2f points on them.\n", vettedScore);
         System.out.printf("Answered %d for full or partial credit", totalCorrectVetted);
         System.out.printf("Answered  %d for no credit", totalIncorrectVetted);
         System.out.println();
@@ -385,7 +385,7 @@ public class Quiz {
         return vettedScore;
     }
 
-    public void setVettedScore(double vettedScore) {
+    public void setVettedScore(final double vettedScore) {
         this.vettedScore = vettedScore;
     }
 
@@ -469,15 +469,22 @@ public class Quiz {
         }
 
     }
-    public Map<String,Boolean> parseChoicesMap(final String... questionMapArr){
-        String[]questarray=Arrays.copyOfRange(questionMapArr, 0, questionMapArr.length/2);
-        String[] strAnswerValidities=Arrays.copyOfRange(questionMapArr, questionMapArr.length/2,questionMapArr.length);
-        Boolean[] answerValidities=new Boolean[strAnswerValidities.length];
-        Arrays.stream(strAnswerValidities).map((x)->x.equalsIgnoreCase("true")?Boolean.TRUE:Boolean.FALSE).collect(Collectors.toList()).toArray(answerValidities);
+
+    /**
+     * Parses the choices and relates them with their values.
+     *
+     * @param questionMapArr list with options and then values of each question
+     * @return options maped with their values
+     */
+    public Map<String, Boolean> parseChoicesMap(final String... questionMapArr) {
+        final String[] questarray = Arrays.copyOfRange(questionMapArr, 0, questionMapArr.length / 2);
+        final String[] strAnswerValidities = Arrays.copyOfRange(questionMapArr, questionMapArr.length / 2, questionMapArr.length);
+        final Boolean[] answerValidities = new Boolean[strAnswerValidities.length];
+        Arrays.stream(strAnswerValidities).map((booleanAnswer) -> "true".equalsIgnoreCase(booleanAnswer) ? Boolean.TRUE : Boolean.FALSE).collect(Collectors.toList()).toArray(answerValidities);
         return createAnswerChoicesMap(questarray, answerValidities);
     }
-    
-    private String formateaPregunta(String strPregunta){
+
+    private String formateaPregunta(final String strPregunta) {
         return strPregunta.replaceAll("\\n", "\n");
     }
 
