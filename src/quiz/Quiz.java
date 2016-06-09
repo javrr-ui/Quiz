@@ -482,7 +482,7 @@ public class Quiz {
     }
 
     private String formateaPregunta(final String strPregunta) {
-        return strPregunta.replaceAll("\\n", "\n");
+        return strPregunta.replaceAll("\\\\n", "\n");
     }
 
 }
