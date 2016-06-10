@@ -16,6 +16,7 @@ abstract public class Question {
 
     protected String text;
     protected String answer;
+    protected String explanation;
     protected String userAnswer;
     protected String vettedOrTrial;
     protected String category;
@@ -51,6 +52,13 @@ abstract public class Question {
 
     public abstract String getAnswer();
 
+    public String getExplanation() {
+        return explanation;
+    }
+
+    public void setExplanation(String explanation) {
+        this.explanation = explanation;
+    }
 //    /**
 //     * Checks the answer(s)
 //     * @return true for correct, false otherwise

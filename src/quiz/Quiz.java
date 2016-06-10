@@ -207,7 +207,7 @@ public class Quiz {
             score += puntosRespuesta;
 
             //Show user total points earned
-            System.out.println(java.text.MessageFormat.format(java.util.ResourceBundle.getBundle("quiz/resources/quiz").getString("TOTAL_POINTS"), new Object[]{score}));
+            System.out.printf(java.util.ResourceBundle.getBundle("quiz/resources/quiz").getString("TOTAL_POINTS"),score);
 
             //Was the answer vetted/trial and correct, partially correct, or incorrect?
             int compare;
@@ -287,9 +287,10 @@ public class Quiz {
      * Adds a new multiple choice question to the specified question list.
      */
     private void addMultipleChoiceQuestion(final List<Question> questions,
-            final String vettedness, final String questionText, final int correctAnswerIdx,
+            final String vettedness, final String explanation, final String questionText, final int correctAnswerIdx,
             final String... answersTexts) {
         final MultipleChoiceQuestion choiceQuestion = new MultipleChoiceQuestion(vettedness);
+        choiceQuestion.setExplanation(explanation);
         choiceQuestion.setText(questionText);
         for (int i = 0; i < answersTexts.length; i++) {
             final String answerText = answersTexts[i];
@@ -306,9 +307,10 @@ public class Quiz {
      *
      */
     private void addMultipleAnswerQuestion(final List<Question> questions,
-            final String vettedness, final String questionText,
+            final String vettedness, final String explanation, final String questionText,
             final Map<String, Boolean> answerChoicesMap) {
         final MultipleAnswerQuestion choiceQuestion = new MultipleAnswerQuestion(vettedness);
+        choiceQuestion.setExplanation(explanation);
         choiceQuestion.setText(questionText);
         answerChoicesMap.entrySet().stream().forEach((choiceEntry) -> {
             choiceQuestion.setChoice(choiceEntry.getKey(), choiceEntry.getValue());
@@ -320,8 +322,9 @@ public class Quiz {
      *
      */
     private void addFillBlankQuestion(final List<Question> questions,
-            final String vettedness, final String questionText, final String... blanks) {
+            final String vettedness, final String explanation, final String questionText, final String... blanks) {
         final FillBlankQuestion fillBlankQuestion = new FillBlankQuestion(vettedness);
+        fillBlankQuestion.setExplanation(explanation);
         fillBlankQuestion.setText(questionText);
         for (final String blank : blanks) {
             fillBlankQuestion.setAnswer(blank);
@@ -355,8 +358,9 @@ public class Quiz {
             if (points < currentQuestion.getMaxPoints()) {
                 //Show user points earned for incorrect answer
                 System.out.println(questions.get(i).display());
-                System.out.println(java.text.MessageFormat.format(java.util.ResourceBundle.getBundle("quiz/resources/quiz").getString("RECEIVED_POINTS"), new Object[]{points}));
-                System.out.println(java.text.MessageFormat.format(java.util.ResourceBundle.getBundle("quiz/resources/quiz").getString("CORRECT_ANSWER"), new Object[]{questions.get(i).getAnswer()}));
+                System.out.println(java.text.MessageFormat.format(java.util.ResourceBundle.getBundle("quiz/resources/quiz").getString("RECEIVED_POINTS"), points));
+                System.out.println(java.text.MessageFormat.format(java.util.ResourceBundle.getBundle("quiz/resources/quiz").getString("CORRECT_ANSWER"), questions.get(i).getAnswer()));
+                System.out.println(java.text.MessageFormat.format(java.util.ResourceBundle.getBundle("quiz/resources/quiz").getString("EXPLANATION"), questions.get(i).explanation));
             }
         }
     }
@@ -450,15 +454,15 @@ public class Quiz {
         String tipoPregunta = questarray[0];
         switch (tipoPregunta) {
             case "MC"://multiple choice
-                addMultipleChoiceQuestion(questions, questarray[1] == "v" ? Question.VETTED : Question.TRIAL,
-                        formateaPregunta(questarray[2]), Integer.valueOf(questarray[3]), Arrays.copyOfRange(questarray, 4, questarray.length));
+                addMultipleChoiceQuestion(questions, questarray[1] == "v" ? Question.VETTED : Question.TRIAL, questarray[2],
+                        formateaPregunta(questarray[3]), Integer.valueOf(questarray[4]), Arrays.copyOfRange(questarray, 5, questarray.length));
                 break;
             case "FB"://fill in the blanks
-                addFillBlankQuestion(questions, questarray[1] == "v" ? Question.VETTED : Question.TRIAL, formateaPregunta(questarray[2]), Arrays.copyOfRange(questarray, 3, questarray.length));
+                addFillBlankQuestion(questions, questarray[1] == "v" ? Question.VETTED : Question.TRIAL, questarray[2], formateaPregunta(questarray[3]), Arrays.copyOfRange(questarray, 4, questarray.length));
                 break;
             case "MA":
-                addMultipleAnswerQuestion(questions, questarray[1] == "v" ? Question.VETTED : Question.TRIAL, formateaPregunta(questarray[2]),
-                        parseChoicesMap(Arrays.copyOfRange(questarray, 3, questarray.length)));
+                addMultipleAnswerQuestion(questions, questarray[1] == "v" ? Question.VETTED : Question.TRIAL, questarray[2], formateaPregunta(questarray[3]),
+                        parseChoicesMap(Arrays.copyOfRange(questarray, 4, questarray.length)));
                 break;
             default:
                 System.err.println(java.text.MessageFormat.format(java.util.ResourceBundle.getBundle("quiz/resources/quiz").getString("QUESTION_TYPE_ERR"), new Object[]{}));
