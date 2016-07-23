@@ -74,68 +74,7 @@ public class Quiz {
     public Quiz() {
         questions = new ArrayList<>();
     }
-
-    /**
-     * Creates the questions of the quiz.
-     */
-    /*  public void createQuestions() {
-        addMultipleChoiceQuestion(questions, Question.VETTED,
-                "Multiple choice: What is the first month of the year?", 0,
-                "January", "February", "March"
-        );
-
-        addMultipleChoiceQuestion(questions, Question.TRIAL,
-                "Multiple choice: What is an apple product?", 0,
-                "ipod", "zune", "lenovo"
-        );
-
-        addMultipleChoiceQuestion(questions, Question.VETTED,
-                "Multiple choice: What is Barack Obama known for?", 1,
-                "Really likes the show Narcos",
-                "He's the president, dude",
-                "Doesn't actually like mac and cheese"
-        );
-
-        addMultipleAnswerQuestion(questions, Question.VETTED,
-                "Multiple answer (more than one possible): What days are not work days?",
-                createAnswerChoicesMap(Utilities.varargs("Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"),
-                        Utilities.varargs(false, false, false, false, false, true, true)
-                )
-        );
-
-        addMultipleAnswerQuestion(questions, Question.TRIAL,
-                "Multiple answer (more than one possible): What words begin with the letter \"a\"?",
-                createAnswerChoicesMap(Utilities.varargs("apple", "chair", "astronomy", "desk"),
-                        Utilities.varargs(true, false, true, false)
-                )
-        );
-        addMultipleAnswerQuestion(questions, Question.VETTED,
-                "Multiple answer (more than one possible): What are common household chores?",
-                createAnswerChoicesMap(Utilities.varargs("sweeping", "laundry", "skydiving", "basket weaving"),
-                        Utilities.varargs(true, true, false, false)
-                )
-        );
-
-        addMultipleChoiceQuestion(questions, Question.VETTED,
-                "Multiple choice: What's the answer, bro?", 0,
-                "The answer", "Not the answer", "Also not the answer"
-        );
-
-        addFillBlankQuestion(questions, Question.VETTED,
-                "Fill in the blank: The quick red ___ jumped over the lazy brown ___. Hint: fox dog",
-                "fox", "dog"
-        );
-
-        addFillBlankQuestion(questions, Question.VETTED,
-                "Fill in the blank: This is a fill in the _____ question.",
-                "blank"
-        );
-
-        addFillBlankQuestion(questions, Question.VETTED,
-                "Fill in the blank: This assignment is for a _________ course.",
-                "programming"
-        );
-    }*/
+    
     /**
      * Reads a file and call the method that processes it to fill the quiz.
      */

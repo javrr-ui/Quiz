@@ -27,7 +27,7 @@ abstract public class Question {
      *
      * @param vettedness
      */
-    public Question(String vettedness) {
+    public Question(final String vettedness) {
 //        text = "";//only necessary for Java 5 where default value for String variable at class scope was null instead of ""
 //        answer = "";
         vettedOrTrial = vettedness;
@@ -39,7 +39,7 @@ abstract public class Question {
      *
      * @param questionText the text of this question
      */
-    public void setText(String questionText) {
+    public void setText(final String questionText) {
         text = questionText;
     }
 
@@ -48,7 +48,7 @@ abstract public class Question {
      *
      * @param answer answer text
      */
-    public abstract void setAnswer(String answer);
+    public abstract void setAnswer(final String answer);
 
     public abstract String getAnswer();
 
