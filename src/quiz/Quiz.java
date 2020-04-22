@@ -5,9 +5,8 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URISyntaxException;
-import java.net.URL;
+import java.io.InputStreamReader;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -74,31 +73,33 @@ public class Quiz {
     public Quiz() {
         questions = new ArrayList<>();
     }
-    
+
     /**
      * Reads a file and call the method that processes it to fill the quiz.
      */
     public void createQuestionsFromFile(String path, boolean isInJar) {
-        final URL rutaArchivo;
+
+        BufferedReader reader;
         if (isInJar) {
-            rutaArchivo = Thread.currentThread().getContextClassLoader().getResource(path);
+            reader = new BufferedReader(new InputStreamReader(Thread.currentThread().getContextClassLoader().getResourceAsStream(path)));
         } else {
+            final URI rutaArchivo;
+            rutaArchivo = new File(path).toURI();
             try {
-                rutaArchivo = new File(path).toURI().toURL();
-            } catch (MalformedURLException ex) {
+                reader = new BufferedReader(new FileReader(new File(rutaArchivo)));
+            } catch (FileNotFoundException e) {
+                Logger.getLogger(Quiz.class.getName()).log(Level.SEVERE, null, e);
                 return;
             }
         }
-        BufferedReader reader = null;
+
         try {
-            reader = new BufferedReader(new FileReader(new File(rutaArchivo.toURI())));
-            String thisLine = null;
+
+            String thisLine;
             while ((thisLine = reader.readLine()) != null) {
                 parseaPregunta(thisLine);
             }
-        } catch (FileNotFoundException ex) {
-            Logger.getLogger(Quiz.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (URISyntaxException | IOException ex) {
+        } catch (IOException ex) {
             Logger.getLogger(Quiz.class.getName()).log(Level.SEVERE, null, ex);
         } finally {
             if (reader != null) {
@@ -146,7 +147,7 @@ public class Quiz {
             score += puntosRespuesta;
 
             //Show user total points earned
-            System.out.printf(java.util.ResourceBundle.getBundle("quiz/resources/quiz").getString("TOTAL_POINTS"),score);
+            System.out.printf(java.util.ResourceBundle.getBundle("quiz/resources/quiz").getString("TOTAL_POINTS"), score);
 
             //Was the answer vetted/trial and correct, partially correct, or incorrect?
             int compare;
@@ -226,8 +227,8 @@ public class Quiz {
      * Adds a new multiple choice question to the specified question list.
      */
     private void addMultipleChoiceQuestion(final List<Question> questions,
-            final String vettedness, final String explanation, final String questionText, final int correctAnswerIdx,
-            final String... answersTexts) {
+                                           final String vettedness, final String explanation, final String questionText, final int correctAnswerIdx,
+                                           final String... answersTexts) {
         final MultipleChoiceQuestion choiceQuestion = new MultipleChoiceQuestion(vettedness);
         choiceQuestion.setExplanation(explanation);
         choiceQuestion.setText(questionText);
@@ -246,8 +247,8 @@ public class Quiz {
      *
      */
     private void addMultipleAnswerQuestion(final List<Question> questions,
-            final String vettedness, final String explanation, final String questionText,
-            final Map<String, Boolean> answerChoicesMap) {
+                                           final String vettedness, final String explanation, final String questionText,
+                                           final Map<String, Boolean> answerChoicesMap) {
         final MultipleAnswerQuestion choiceQuestion = new MultipleAnswerQuestion(vettedness);
         choiceQuestion.setExplanation(explanation);
         choiceQuestion.setText(questionText);
@@ -261,7 +262,7 @@ public class Quiz {
      *
      */
     private void addFillBlankQuestion(final List<Question> questions,
-            final String vettedness, final String explanation, final String questionText, final String... blanks) {
+                                      final String vettedness, final String explanation, final String questionText, final String... blanks) {
         final FillBlankQuestion fillBlankQuestion = new FillBlankQuestion(vettedness);
         fillBlankQuestion.setExplanation(explanation);
         fillBlankQuestion.setText(questionText);
