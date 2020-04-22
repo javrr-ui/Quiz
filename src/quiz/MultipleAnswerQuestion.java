@@ -12,7 +12,7 @@ package quiz;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Scanner;
+import java.util.Collections;
 
 public class MultipleAnswerQuestion extends MultipleChoiceQuestion {
 
@@ -68,18 +68,16 @@ public class MultipleAnswerQuestion extends MultipleChoiceQuestion {
         String[] tokens = userAnswer.split(delims);
 
         ArrayList<String> answers = new ArrayList<>(tokens.length);
-        for (String s : tokens) {
-            answers.add(s);
-        }
+        Collections.addAll(answers, tokens);
 
         double totRightAnswers = correctAnswers.size();
         double totAnswers = tokens.length;
         double wrongAnswers = tokens.length;
         double grade = 0.0;
 
-        for (int i = 0; i < answers.size(); i++) {
-            for (int j = 0; j < correctAnswers.size(); j++) {
-                if (answers.get(i).equals(correctAnswers.get(j))) {
+        for (String answer : answers) {
+            for (String correctAnswer : correctAnswers) {
+                if (answer.equals(correctAnswer)) {
                     grade += 1.0 / totRightAnswers;
                     wrongAnswers -= 1.0;
                 }

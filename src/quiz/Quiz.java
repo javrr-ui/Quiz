@@ -7,12 +7,14 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URI;
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.ResourceBundle;
 import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -26,6 +28,9 @@ import java.util.stream.Collectors;
  */
 public class Quiz {
 
+    public static final String FIELD_DIVIDER = "@@";
+
+    private int maxQuestions = -1;
     /**
      *
      */
@@ -124,15 +129,19 @@ public class Quiz {
         Collections.shuffle(questions);//pregunta aleatoriamente
         System.out.println(message);
         final Scanner scanner = new Scanner(System.in);
+        int questionsToAsk;
+        if (maxQuestions != -1 && maxQuestions < questions.size()) {
+            questionsToAsk = maxQuestions;
+        } else {
+            questionsToAsk = questions.size();
+        }
         //For every question in questions
-        final int numQuestions = questions.size();
-        for (int i = 0; i < numQuestions; i++) {
-            final Question currentQuestion = questions.get(i);
-
+        for (int i = 0; i < questionsToAsk; i++) {
+            Question currentQuestion = questions.get(i);
             //Display the question
             System.out.println(currentQuestion.display());
 
-            System.out.println(java.text.MessageFormat.format(java.util.ResourceBundle.getBundle("quiz/resources/quiz").getString("ENTER_YOUR_ANSWERS"), new Object[]{}));
+            System.out.println(MessageFormat.format(ResourceBundle.getBundle("quiz/resources/quiz").getString("ENTER_YOUR_ANSWERS"), new Object[]{}));
             //Take input
             final String input = scanner.nextLine();
 
@@ -140,14 +149,14 @@ public class Quiz {
             //TODO perhaps instead of 
             //currentQuestion.checkQuestionProvidingAnswer(input) userAnswer
             //could be just setted
-            System.out.println(java.text.MessageFormat.format(java.util.ResourceBundle.getBundle("quiz/resources/quiz").getString("RECEIVED_POINTS"), new Object[]{currentQuestion.checkQuestionProvidingAnswer(input)}));
+            System.out.println(MessageFormat.format(ResourceBundle.getBundle("quiz/resources/quiz").getString("RECEIVED_POINTS"), new Object[]{currentQuestion.checkQuestionProvidingAnswer(input)}));
 
             //Add points to total score
             final double puntosRespuesta = currentQuestion.checkQuestion();
             score += puntosRespuesta;
 
             //Show user total points earned
-            System.out.printf(java.util.ResourceBundle.getBundle("quiz/resources/quiz").getString("TOTAL_POINTS"), score);
+            System.out.printf(ResourceBundle.getBundle("quiz/resources/quiz").getString("TOTAL_POINTS"), score);
 
             //Was the answer vetted/trial and correct, partially correct, or incorrect?
             int compare;
@@ -234,11 +243,7 @@ public class Quiz {
         choiceQuestion.setText(questionText);
         for (int i = 0; i < answersTexts.length; i++) {
             final String answerText = answersTexts[i];
-            if (i == correctAnswerIdx) {
-                choiceQuestion.setChoice(answerText, true);
-            } else {
-                choiceQuestion.setChoice(answerText, false);
-            }
+            choiceQuestion.setChoice(answerText, i == correctAnswerIdx);
         }
         questions.add(choiceQuestion);
     }
@@ -390,18 +395,18 @@ public class Quiz {
      * @param questionString the question fields split by @@
      */
     private void parseaPregunta(final String questionString) {
-        final String[] questarray = questionString.split("@@");
+        final String[] questarray = questionString.split(FIELD_DIVIDER);
         String tipoPregunta = questarray[0];
         switch (tipoPregunta) {
             case "MC"://multiple choice
-                addMultipleChoiceQuestion(questions, questarray[1] == "v" ? Question.VETTED : Question.TRIAL, questarray[2],
+                addMultipleChoiceQuestion(questions, "v".equals(questarray[1]) ? Question.VETTED : Question.TRIAL, questarray[2],
                         formateaPregunta(questarray[3]), Integer.valueOf(questarray[4]), Arrays.copyOfRange(questarray, 5, questarray.length));
                 break;
             case "FB"://fill in the blanks
-                addFillBlankQuestion(questions, questarray[1] == "v" ? Question.VETTED : Question.TRIAL, questarray[2], formateaPregunta(questarray[3]), Arrays.copyOfRange(questarray, 4, questarray.length));
+                addFillBlankQuestion(questions, "v".equals(questarray[1]) ? Question.VETTED : Question.TRIAL, questarray[2], formateaPregunta(questarray[3]), Arrays.copyOfRange(questarray, 4, questarray.length));
                 break;
             case "MA":
-                addMultipleAnswerQuestion(questions, questarray[1] == "v" ? Question.VETTED : Question.TRIAL, questarray[2], formateaPregunta(questarray[3]),
+                addMultipleAnswerQuestion(questions, "v".equals(questarray[1]) ? Question.VETTED : Question.TRIAL, questarray[2], formateaPregunta(questarray[3]),
                         parseChoicesMap(Arrays.copyOfRange(questarray, 4, questarray.length)));
                 break;
             default:
@@ -429,4 +434,15 @@ public class Quiz {
         return strPregunta.replaceAll("\\\\n", "\n");
     }
 
+    public void askForSubsetSize() {
+        System.out.printf("Currently there are %d questions how many of them you want in the test?\n", questions.size());
+        Scanner scanner = new Scanner(System.in);
+        try {
+            maxQuestions = Integer.parseInt(scanner.nextLine());
+        } catch (Exception e) {
+            System.err.println("problem reading number of questions maximum asserted");
+            maxQuestions = -1;
+        }
+
+    }
 }
