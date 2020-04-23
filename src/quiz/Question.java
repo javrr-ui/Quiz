@@ -64,6 +64,7 @@ abstract public class Question {
 //     * @return true for correct, false otherwise
 //     */
 //    public abstract double checkAnswer(String answer);
+
     /**
      * Show question Text
      *
@@ -80,15 +81,33 @@ abstract public class Question {
     public abstract double checkQuestionProvidingAnswer(final String answer);
 
     public double checkQuestion() {
-        if (userAnswer != null && userAnswer.equals(answer)) {
-            return 1.0;
-        } else {
-            //TODO tal vez aquí llamar a checkQuestionProvidingAnswer para llenar
-            return 0.0;
+        if (userAnswer != null) {
+            if (this instanceof FillBlankQuestion) {
+                if (userAnswer.equalsIgnoreCase(answer)) {
+                    return 1.0;
+                }
+//                else {
+                //TODO tal vez aquí llamar a checkQuestionProvidingAnswer para llenar
+//                    return 0.0;
+//                }
+            } else {
+                if (userAnswer.equals(answer)) {
+                    return 1.0;
+                }
+//                else {
+                //TODO tal vez aquí llamar a checkQuestionProvidingAnswer para llenar
+//                    return 0.0;
+//                }
+            }
         }
+        //TODO tal vez aquí llamar a checkQuestionProvidingAnswer para llenar
+        return 0.0;
+
     }
 
-    /**Maximum number of point that can be awarded by this question.*/
+    /**
+     * Maximum number of point that can be awarded by this question.
+     */
     abstract double getMaxPoints();
 
 }
