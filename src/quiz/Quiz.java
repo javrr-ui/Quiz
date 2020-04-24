@@ -16,6 +16,7 @@ import java.util.Map;
 import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import static java.util.ResourceBundle.getBundle;
@@ -29,6 +30,8 @@ import static java.util.ResourceBundle.getBundle;
 public class Quiz {
 
     public static final String FIELD_DIVIDER = "@@";
+    private static final Pattern SEPARATE_BY_DIVIDER_PATTERN = Pattern.compile(FIELD_DIVIDER);
+    private static final Pattern LINE_BREAK = Pattern.compile("\\\\n");
 
     private int maxQuestions = -1;
     /**
@@ -76,7 +79,7 @@ public class Quiz {
      * Default Constructor
      */
     public Quiz() {
-        questions = new ArrayList<>();
+        questions = new ArrayList<>(50);
     }
 
     /**
@@ -123,7 +126,7 @@ public class Quiz {
 
         //Display a message
         final String message
-                = java.text.MessageFormat.format(getBundle("quiz/resources/quiz").getString("FOR_MULTIPLE_CHOICE"), new Object[]{});
+                = MessageFormat.format(getBundle("quiz/resources/quiz").getString("FOR_MULTIPLE_CHOICE"), new Object[]{});
         Collections.shuffle(questions);//pregunta aleatoriamente
         System.out.println(message);
         final Scanner scanner = new Scanner(System.in);
@@ -226,24 +229,24 @@ public class Quiz {
         final int totalCorrect = totalCorrectVetted + totalCorrectTrial;
         final int totalIncorrect = totalIncorrectVetted + totalIncorrectTrial;
 
-        System.out.printf(java.text.MessageFormat.format(getBundle("quiz/resources/quiz").getString("TOTAL_QUESTIONS"), new Object[]{}), questions.size());
-        System.out.printf(java.text.MessageFormat.format(getBundle("quiz/resources/quiz").getString("TOTAL_POINTS"), new Object[]{}), score);
-        System.out.printf(java.text.MessageFormat.format(getBundle("quiz/resources/quiz").getString("FOR_CREDIT"), new Object[]{}), totalCorrect);
-        System.out.printf(java.text.MessageFormat.format(getBundle("quiz/resources/quiz").getString("FOR_NO_CREDIT"), new Object[]{}), totalIncorrect);
+        System.out.printf(MessageFormat.format(getBundle("quiz/resources/quiz").getString("TOTAL_QUESTIONS"), new Object[]{}), questions.size());
+        System.out.printf(MessageFormat.format(getBundle("quiz/resources/quiz").getString("TOTAL_POINTS"), new Object[]{}), score);
+        System.out.printf(MessageFormat.format(getBundle("quiz/resources/quiz").getString("FOR_CREDIT"), new Object[]{}), totalCorrect);
+        System.out.printf(MessageFormat.format(getBundle("quiz/resources/quiz").getString("FOR_NO_CREDIT"), new Object[]{}), totalIncorrect);
         System.out.println();
 
-        System.out.println(java.text.MessageFormat.format(getBundle("quiz/resources/quiz").getString("VETTED_QUESTIONS"), totalVetted));
-        System.out.printf(java.text.MessageFormat.format(getBundle("quiz/resources/quiz").getString("TOTAL_OF_POINTS"), new Object[]{}), vettedScore);
-        System.out.printf(java.text.MessageFormat.format(getBundle("quiz/resources/quiz").getString("FOR_CREDIT"), new Object[]{}), totalCorrectVetted);
-        System.out.printf(java.text.MessageFormat.format(getBundle("quiz/resources/quiz").getString("FOR_NO_CREDIT"), new Object[]{}), totalIncorrectVetted);
+        System.out.println(MessageFormat.format(getBundle("quiz/resources/quiz").getString("VETTED_QUESTIONS"), totalVetted));
+        System.out.printf(MessageFormat.format(getBundle("quiz/resources/quiz").getString("TOTAL_OF_POINTS"), new Object[]{}), vettedScore);
+        System.out.printf(MessageFormat.format(getBundle("quiz/resources/quiz").getString("FOR_CREDIT"), new Object[]{}), totalCorrectVetted);
+        System.out.printf(MessageFormat.format(getBundle("quiz/resources/quiz").getString("FOR_NO_CREDIT"), new Object[]{}), totalIncorrectVetted);
         System.out.println();
 
-        System.out.printf(java.text.MessageFormat.format(getBundle("quiz/resources/quiz").getString("TRIAL_QUESTIONS"), new Object[]{}), totalTrial);
-        System.out.printf(java.text.MessageFormat.format(getBundle("quiz/resources/quiz").getString("TOTAL_OF_POINTS"), new Object[]{}), trialScore);
-        System.out.printf(java.text.MessageFormat.format(getBundle("quiz/resources/quiz").getString("FOR_CREDIT"), new Object[]{}), totalCorrectTrial);
-        System.out.printf(java.text.MessageFormat.format(getBundle("quiz/resources/quiz").getString("FOR_NO_CREDIT"), new Object[]{}), totalIncorrectTrial);
+        System.out.printf(MessageFormat.format(getBundle("quiz/resources/quiz").getString("TRIAL_QUESTIONS"), new Object[]{}), totalTrial);
+        System.out.printf(MessageFormat.format(getBundle("quiz/resources/quiz").getString("TOTAL_OF_POINTS"), new Object[]{}), trialScore);
+        System.out.printf(MessageFormat.format(getBundle("quiz/resources/quiz").getString("FOR_CREDIT"), new Object[]{}), totalCorrectTrial);
+        System.out.printf(MessageFormat.format(getBundle("quiz/resources/quiz").getString("FOR_NO_CREDIT"), new Object[]{}), totalIncorrectTrial);
 
-        System.out.println(java.text.MessageFormat.format(getBundle("quiz/resources/quiz").getString("HAVE_A_W"), new Object[]{}));
+        System.out.println(MessageFormat.format(getBundle("quiz/resources/quiz").getString("HAVE_A_W"), new Object[]{}));
     }
 
     /**
@@ -295,9 +298,9 @@ public class Quiz {
     private Map<String, Boolean> createAnswerChoicesMap(final String[] answerTexts, final Boolean... answerValidities) {
         final int numsOfAnswers = answerTexts.length;
         if (numsOfAnswers != answerValidities.length) {
-            throw new RuntimeException(java.text.MessageFormat.format(getBundle("quiz/resources/quiz").getString("ANSWER_TEXTS_ERR"), new Object[]{}));
+            throw new RuntimeException(MessageFormat.format(getBundle("quiz/resources/quiz").getString("ANSWER_TEXTS_ERR"), new Object[]{}));
         }
-        final HashMap<String, Boolean> hashMap = new HashMap<>();
+        final HashMap<String, Boolean> hashMap = new HashMap<>(2);
         for (int answIdx = 0; answIdx < answerTexts.length; answIdx++) {
             hashMap.put(answerTexts[answIdx], answerValidities[answIdx]);
         }
@@ -308,7 +311,7 @@ public class Quiz {
      * Prints again failed questions showing also their correct answers
      */
     public void showFailed() {
-        System.out.println(java.text.MessageFormat.format(getBundle("quiz/resources/quiz").getString("FAILED_QUESTIONS"), new Object[]{}));
+        System.out.println(MessageFormat.format(getBundle("quiz/resources/quiz").getString("FAILED_QUESTIONS"), new Object[]{}));
 
         int questionsToAsk;
         if (maxQuestions != -1 && maxQuestions < questions.size()) {
@@ -323,9 +326,9 @@ public class Quiz {
             if (points < currentQuestion.getMaxPoints()) {
                 //Show user points earned for incorrect answer
                 System.out.println(questions.get(i).display());
-                System.out.println(java.text.MessageFormat.format(getBundle("quiz/resources/quiz").getString("RECEIVED_POINTS"), points));
-                System.out.println(java.text.MessageFormat.format(getBundle("quiz/resources/quiz").getString("CORRECT_ANSWER"), questions.get(i).getAnswer()));
-                System.out.println(java.text.MessageFormat.format(getBundle("quiz/resources/quiz").getString("EXPLANATION"), questions.get(i).explanation));
+                System.out.println(MessageFormat.format(getBundle("quiz/resources/quiz").getString("RECEIVED_POINTS"), points));
+                System.out.println(MessageFormat.format(getBundle("quiz/resources/quiz").getString("CORRECT_ANSWER"), questions.get(i).getAnswer()));
+                System.out.println(MessageFormat.format(getBundle("quiz/resources/quiz").getString("EXPLANATION"), questions.get(i).explanation));
             }
         }
     }
@@ -334,7 +337,7 @@ public class Quiz {
      * @param questionString the question fields split by @@
      */
     private void parseQuestion(final String questionString) {
-        final String[] questarray = questionString.split(FIELD_DIVIDER);
+        final String[] questarray = SEPARATE_BY_DIVIDER_PATTERN.split(questionString);
         String tipoPregunta = questarray[0];
         switch (tipoPregunta) {
             case "MC"://multiple choice
@@ -349,7 +352,7 @@ public class Quiz {
                         parseChoicesMap(Arrays.copyOfRange(questarray, 4, questarray.length)));
                 break;
             default:
-                System.err.println(java.text.MessageFormat.format(getBundle("quiz/resources/quiz").getString("QUESTION_TYPE_ERR"), new Object[]{}));
+                System.err.println(MessageFormat.format(getBundle("quiz/resources/quiz").getString("QUESTION_TYPE_ERR"), new Object[]{}));
                 break;
         }
 
@@ -370,7 +373,7 @@ public class Quiz {
     }
 
     private String formateaPregunta(final String strPregunta) {
-        return strPregunta.replaceAll("\\\\n", "\n");
+        return LINE_BREAK.matcher(strPregunta).replaceAll("\n");
     }
 
     public void askForSubsetSize() {

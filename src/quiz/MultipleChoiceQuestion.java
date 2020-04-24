@@ -11,33 +11,35 @@
 package quiz;
 
 import java.util.ArrayList;
+import java.util.regex.Pattern;
 
 /**
  * A question with multiple choices.
  */
 public class MultipleChoiceQuestion extends Question {
 
-    private ArrayList<String> choices;
+    private static final Pattern BLANKS = Pattern.compile("\\s+");
+    private final ArrayList<String> choices;
 
     /**
      * Constructs a multiple choice question with no choices.
      */
     public MultipleChoiceQuestion(String vettedness) {
         super(vettedness);
-        choices = new ArrayList<>();
+        choices = new ArrayList<>(2);
     }
 
     /**
      * Adds an answer choice to this question.
      *
-     * @param choice the choice to add
+     * @param choice  the choice to add
      * @param correct true if this is the correct choice, false otherwise
      */
     public void setChoice(String choice, boolean correct) {
         choices.add(choice);
         if (correct) {
             // Convert choices.size() to string
-            String choiceString = "" + (choices.size());
+            String choiceString = String.valueOf(choices.size());
             setAnswer(choiceString);
         }
     }
@@ -46,7 +48,7 @@ public class MultipleChoiceQuestion extends Question {
      * Sets the correct answer. A number in a string.
      *
      * @param answer a number in a string that corresponds to the answers place
-     * in the choices arrayList
+     *               in the choices arrayList
      */
     @Override
     public void setAnswer(String answer) {
@@ -61,7 +63,7 @@ public class MultipleChoiceQuestion extends Question {
 
     @Override
     public double checkQuestionProvidingAnswer(final String answer) {
-        userAnswer = answer.replaceAll("\\s+", "");
+        userAnswer = BLANKS.matcher(answer).replaceAll("");
         return checkQuestion();
     }
 
@@ -73,14 +75,15 @@ public class MultipleChoiceQuestion extends Question {
     @Override
     public String display() {
 
-        String display = text + "\n";
+        StringBuilder display = new StringBuilder(text);
+        display.append("\n");
 
         for (int i = 0; i < choices.size(); i++) {
             int choiceNumber = i + 1;
-            display = display.concat(choiceNumber + ": " + choices.get(i) + "\n");
+            display.append(choiceNumber).append(": ").append(choices.get(i)).append("\n");
         }
 
-        return display;
+        return display.toString();
     }
 
     /**

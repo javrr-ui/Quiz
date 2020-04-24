@@ -16,16 +16,16 @@ import java.util.Collections;
 
 public class MultipleAnswerQuestion extends MultipleChoiceQuestion {
 
-    private ArrayList<String> choices;
-    private ArrayList<String> correctAnswers;
+    private final ArrayList<String> choices;
+    private final ArrayList<String> correctAnswers;
 
     /**
      * Constructs a choice question with no choices.
      */
     public MultipleAnswerQuestion(String vettedness) {
         super(vettedness);
-        choices = new ArrayList<>();
-        correctAnswers = new ArrayList<>();
+        choices = new ArrayList<>(2);
+        correctAnswers = new ArrayList<>(1);
     }
 
     /**
@@ -38,7 +38,7 @@ public class MultipleAnswerQuestion extends MultipleChoiceQuestion {
         choices.add(choice);
         if (correct) {
             // Convert choices.size() to string
-            String choiceString = "" + choices.size();
+            String choiceString = String.valueOf(choices.size());
             setAnswer(choiceString);
         }
     }
@@ -104,14 +104,15 @@ public class MultipleAnswerQuestion extends MultipleChoiceQuestion {
     @Override
     public String display() {
 
-        String display = text + "\n";
+        StringBuilder display = new StringBuilder(text);
+        display.append("\n");
 
         for (int i = 0; i < choices.size(); i++) {
             final int choiceNumber = i + 1;
-            display = display.concat(choiceNumber + ": " + choices.get(i) + "\n");
+            display.append(choiceNumber).append(": ").append(choices.get(i)).append("\n");
         }
 
-        return display;
+        return display.toString();
 
     }
 
