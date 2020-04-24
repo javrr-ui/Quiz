@@ -136,7 +136,7 @@ public class Quiz {
             Question currentQuestion = questions.get(i);
             //Display the question
             System.out.println(currentQuestion.display());
-            System.out.println(MessageFormat.format(getBundle("quiz/resources/quiz").getString("ENTER_YOUR_ANSWERS"), new Object[]{}));
+            System.out.println(getBundle("quiz/resources/quiz").getString("ENTER_YOUR_ANSWERS"));
             //Take input
             final String input = scanner.nextLine();
 
