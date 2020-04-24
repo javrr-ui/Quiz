@@ -32,12 +32,15 @@ public class Quiz {
     public static final String FIELD_DIVIDER = "@@";
     private static final Pattern SEPARATE_BY_DIVIDER_PATTERN = Pattern.compile(FIELD_DIVIDER);
     private static final Pattern LINE_BREAK = Pattern.compile("\\\\n");
+    private static final Pattern BLANKS = Pattern.compile("\\s+");
 
     private int maxQuestions = -1;
     /**
      *
      */
     private final List<Question> questions;
+
+    List<String> selectedCategories;
     /**
      * Score obtained in the quiz.
      */
@@ -258,10 +261,12 @@ public class Quiz {
      */
     private void addMultipleChoiceQuestion(final List<Question> questions,
                                            final String vettedness, final String explanation, final String questionText, final int correctAnswerIdx,
+                                           final String category,
                                            final String... answersTexts) {
         final MultipleChoiceQuestion choiceQuestion = new MultipleChoiceQuestion(vettedness);
         choiceQuestion.setExplanation(explanation);
         choiceQuestion.setText(questionText);
+        choiceQuestion.setCategory(category);
         for (int i = 0; i < answersTexts.length; i++) {
             final String answerText = answersTexts[i];
             choiceQuestion.setChoice(answerText, i == correctAnswerIdx);
@@ -274,10 +279,12 @@ public class Quiz {
      */
     private void addMultipleAnswerQuestion(final List<Question> questions,
                                            final String vettedness, final String explanation, final String questionText,
+                                           final String category,
                                            final Map<String, Boolean> answerChoicesMap) {
         final MultipleAnswerQuestion choiceQuestion = new MultipleAnswerQuestion(vettedness);
         choiceQuestion.setExplanation(explanation);
         choiceQuestion.setText(questionText);
+        choiceQuestion.setCategory(category);
         answerChoicesMap.forEach(choiceQuestion::setChoice);
         questions.add(choiceQuestion);
     }
@@ -286,10 +293,13 @@ public class Quiz {
      *
      */
     private void addFillBlankQuestion(final List<Question> questions,
-                                      final String vettedness, final String explanation, final String questionText, final String... blanks) {
+                                      final String vettedness, final String explanation, final String questionText,
+                                      final String category,
+                                      final String... blanks) {
         final FillBlankQuestion fillBlankQuestion = new FillBlankQuestion(vettedness);
         fillBlankQuestion.setExplanation(explanation);
         fillBlankQuestion.setText(questionText);
+        fillBlankQuestion.setCategory(category);
         for (final String blank : blanks) {
             fillBlankQuestion.setAnswer(blank);
         }
@@ -349,19 +359,19 @@ public class Quiz {
                 int correctAnswerIdx = Integer.parseInt(questarray[6]);
                 String[] answersTexts = Arrays.copyOfRange(questarray, 7, questarray.length);
                 addMultipleChoiceQuestion(questions, vettedness, explanation,
-                        questionText, correctAnswerIdx, answersTexts);
+                        questionText, correctAnswerIdx, category, answersTexts);
                 break;
             }
             case "FB": {
                 //fill in the blanks
                 String[] blanks = Arrays.copyOfRange(questarray, 6, questarray.length);
-                addFillBlankQuestion(questions, vettedness, explanation, questionText, blanks);
+                addFillBlankQuestion(questions, vettedness, explanation, questionText, category, blanks);
                 break;
             }
             case "MA": {
                 Map<String, Boolean> choices = parseChoicesMap(Arrays.copyOfRange(questarray, 6, questarray.length));
                 addMultipleAnswerQuestion(questions, vettedness, explanation, questionText,
-                        choices);
+                        category, choices);
                 break;
             }
             default:
@@ -399,5 +409,22 @@ public class Quiz {
             maxQuestions = -1;
         }
 
+    }
+
+    public void askForCategories() {
+        List<String> categories = questions.stream().map(Question::getCategory).distinct().collect(Collectors.toList());
+        System.out.printf("Currently there are %d categories of the questions, please write the number of the categories you want separated by spaces in the same line\n", categories.size());
+        for (int i = 0; i < categories.size(); i++) {
+            String category = categories.get(i);
+            System.out.println(new StringBuilder(5).append(i + 1).append(" - ").append(category).toString());
+        }
+        Scanner scanner = new Scanner(System.in);
+        try {
+            selectedCategories = Arrays.asList(BLANKS.split(scanner.nextLine()));
+            System.out.println("You selected the categories:" + Arrays.toString(selectedCategories.toArray()));
+        } catch (Exception e) {
+            System.err.println("problem reading the categories");
+            selectedCategories = Collections.emptyList();
+        }
     }
 }
