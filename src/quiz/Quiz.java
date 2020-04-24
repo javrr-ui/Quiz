@@ -340,24 +340,26 @@ public class Quiz {
         String tipoPregunta = questarray[0];
         String vettedness = "v".equals(questarray[1]) ? Question.VETTED : Question.TRIAL;
         String explanation = questarray[2];
-        String questionText = formateaPregunta(questarray[3]);
+        String category = questarray[3];
+        int difficulty = Integer.parseInt(questarray[4]);
+        String questionText = formateaPregunta(questarray[5]);
         switch (tipoPregunta) {
             case "MC": {
                 //multiple choice
-                int correctAnswerIdx = Integer.parseInt(questarray[4]);
-                String[] answersTexts = Arrays.copyOfRange(questarray, 5, questarray.length);
+                int correctAnswerIdx = Integer.parseInt(questarray[6]);
+                String[] answersTexts = Arrays.copyOfRange(questarray, 7, questarray.length);
                 addMultipleChoiceQuestion(questions, vettedness, explanation,
                         questionText, correctAnswerIdx, answersTexts);
                 break;
             }
             case "FB": {
                 //fill in the blanks
-                String[] blanks = Arrays.copyOfRange(questarray, 4, questarray.length);
+                String[] blanks = Arrays.copyOfRange(questarray, 6, questarray.length);
                 addFillBlankQuestion(questions, vettedness, explanation, questionText, blanks);
                 break;
             }
             case "MA": {
-                Map<String, Boolean> choices = parseChoicesMap(Arrays.copyOfRange(questarray, 4, questarray.length));
+                Map<String, Boolean> choices = parseChoicesMap(Arrays.copyOfRange(questarray, 6, questarray.length));
                 addMultipleAnswerQuestion(questions, vettedness, explanation, questionText,
                         choices);
                 break;
