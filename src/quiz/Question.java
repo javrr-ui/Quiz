@@ -15,7 +15,7 @@ abstract public class Question {
     protected String userAnswer;
     protected String vettedOrTrial;
     protected String category;
-    protected int difficulty;
+    protected Difficulty difficulty;
 
     /**
      * Constructs a question with empty question and answer
@@ -27,6 +27,7 @@ abstract public class Question {
 //        answer = "";
         vettedOrTrial = vettedness;
         category = "default";
+        difficulty = Difficulty.NORMAL;
     }
 
     /**

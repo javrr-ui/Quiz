@@ -136,7 +136,6 @@ public class Quiz {
             Question currentQuestion = questions.get(i);
             //Display the question
             System.out.println(currentQuestion.display());
-
             System.out.println(MessageFormat.format(getBundle("quiz/resources/quiz").getString("ENTER_YOUR_ANSWERS"), new Object[]{}));
             //Take input
             final String input = scanner.nextLine();
@@ -339,18 +338,30 @@ public class Quiz {
     private void parseQuestion(final String questionString) {
         final String[] questarray = SEPARATE_BY_DIVIDER_PATTERN.split(questionString);
         String tipoPregunta = questarray[0];
+        String vettedness = "v".equals(questarray[1]) ? Question.VETTED : Question.TRIAL;
+        String explanation = questarray[2];
+        String questionText = formateaPregunta(questarray[3]);
         switch (tipoPregunta) {
-            case "MC"://multiple choice
-                addMultipleChoiceQuestion(questions, "v".equals(questarray[1]) ? Question.VETTED : Question.TRIAL, questarray[2],
-                        formateaPregunta(questarray[3]), Integer.parseInt(questarray[4]), Arrays.copyOfRange(questarray, 5, questarray.length));
+            case "MC": {
+                //multiple choice
+                int correctAnswerIdx = Integer.parseInt(questarray[4]);
+                String[] answersTexts = Arrays.copyOfRange(questarray, 5, questarray.length);
+                addMultipleChoiceQuestion(questions, vettedness, explanation,
+                        questionText, correctAnswerIdx, answersTexts);
                 break;
-            case "FB"://fill in the blanks
-                addFillBlankQuestion(questions, "v".equals(questarray[1]) ? Question.VETTED : Question.TRIAL, questarray[2], formateaPregunta(questarray[3]), Arrays.copyOfRange(questarray, 4, questarray.length));
+            }
+            case "FB": {
+                //fill in the blanks
+                String[] blanks = Arrays.copyOfRange(questarray, 4, questarray.length);
+                addFillBlankQuestion(questions, vettedness, explanation, questionText, blanks);
                 break;
-            case "MA":
-                addMultipleAnswerQuestion(questions, "v".equals(questarray[1]) ? Question.VETTED : Question.TRIAL, questarray[2], formateaPregunta(questarray[3]),
-                        parseChoicesMap(Arrays.copyOfRange(questarray, 4, questarray.length)));
+            }
+            case "MA": {
+                Map<String, Boolean> choices = parseChoicesMap(Arrays.copyOfRange(questarray, 4, questarray.length));
+                addMultipleAnswerQuestion(questions, vettedness, explanation, questionText,
+                        choices);
                 break;
+            }
             default:
                 System.err.println(MessageFormat.format(getBundle("quiz/resources/quiz").getString("QUESTION_TYPE_ERR"), new Object[]{}));
                 break;
