@@ -130,12 +130,7 @@ public class Quiz {
         Collections.shuffle(questions);//pregunta aleatoriamente
         System.out.println(message);
         final Scanner scanner = new Scanner(System.in);
-        int questionsToAsk;
-        if (maxQuestions != -1 && maxQuestions < questions.size()) {
-            questionsToAsk = maxQuestions;
-        } else {
-            questionsToAsk = questions.size();
-        }
+        int questionsToAsk = getQuestionsToAsk();
         //For every question in questions
         for (int i = 0; i < questionsToAsk; i++) {
             Question currentQuestion = questions.get(i);
@@ -179,6 +174,16 @@ public class Quiz {
 //        return checkAnswer(input);
 //    }
 
+    }
+
+    private int getQuestionsToAsk() {
+        int questionsToAsk;
+        if (maxQuestions != -1 && maxQuestions < questions.size()) {
+            questionsToAsk = maxQuestions;
+        } else {
+            questionsToAsk = questions.size();
+        }
+        return questionsToAsk;
     }
 
     private void countForVetted(double puntosRespuesta) {
@@ -313,12 +318,7 @@ public class Quiz {
     public void showFailed() {
         System.out.println(MessageFormat.format(getBundle("quiz/resources/quiz").getString("FAILED_QUESTIONS"), new Object[]{}));
 
-        int questionsToAsk;
-        if (maxQuestions != -1 && maxQuestions < questions.size()) {
-            questionsToAsk = maxQuestions;
-        } else {
-            questionsToAsk = questions.size();
-        }
+        int questionsToAsk = getQuestionsToAsk();
 
         for (int i = 0; i < questionsToAsk; i++) {
             final Question currentQuestion = questions.get(i);
