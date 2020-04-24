@@ -25,6 +25,7 @@ public final class QuizDriver {
         final Quiz doom = new Quiz();
         //doom.createQuestions();
         doom.createQuestionsFromFile("quiz/resources/SampleQuiz.txt", true);
+        doom.askForCategories();
         //Display questions to user, receive and check response
         doom.askForSubsetSize();
         doom.displayAndCheckQuestions();

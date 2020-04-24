@@ -13,6 +13,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -38,7 +39,7 @@ public class Quiz {
     /**
      *
      */
-    private final List<Question> questions;
+    private List<Question> questions;
 
     List<String> selectedCategories;
     /**
@@ -144,7 +145,7 @@ public class Quiz {
             final String input = scanner.nextLine();
 
             //Show user points earned for answer
-            //TODO perhaps instead of 
+            //TODO perhaps instead of
             //currentQuestion.checkQuestionProvidingAnswer(input) userAnswer
             //could be just setted
             System.out.println(MessageFormat.format(getBundle("quiz/resources/quiz").getString("RECEIVED_POINTS"), currentQuestion.checkQuestionProvidingAnswer(input)));
@@ -420,10 +421,13 @@ public class Quiz {
         }
         Scanner scanner = new Scanner(System.in);
         try {
-            selectedCategories = Arrays.asList(BLANKS.split(scanner.nextLine()));
+            selectedCategories = Arrays.stream(BLANKS.split(scanner.nextLine())).map(idxStr -> categories.get(Integer.parseInt(idxStr)-1)).filter(Objects::nonNull).distinct().collect(Collectors.toList());
             System.out.println("You selected the categories:" + Arrays.toString(selectedCategories.toArray()));
+            //filter questions by category
+            questions=questions.stream().filter(question -> selectedCategories.contains(question.getCategory())).collect(Collectors.toList());
         } catch (Exception e) {
             System.err.println("problem reading the categories");
+            e.printStackTrace();
             selectedCategories = Collections.emptyList();
         }
     }
