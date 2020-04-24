@@ -20,7 +20,7 @@ public class FillBlankQuestion extends Question {
 
     public FillBlankQuestion(final String vettedness) {
         super(vettedness);
-        correctAnswers = new ArrayList<String>();
+        correctAnswers = new ArrayList<>();
     }
 
     @Override

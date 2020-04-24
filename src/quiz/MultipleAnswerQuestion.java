@@ -87,7 +87,7 @@ public class MultipleAnswerQuestion extends MultipleChoiceQuestion {
         //Deducts points for answers given that were not correct or in excess.
         grade -= wrongAnswers * (1.0 / totRightAnswers);
 
-        /**
+        /*
          * If more answers were wrong/in excess than were right, causing a
          * negative grade, it is brought back up to 0.
          */

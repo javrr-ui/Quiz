@@ -1,10 +1,5 @@
 package quiz;
 
-interface Gradable {
-
-    public boolean gradeQuestion();
-}
-
 /**
  * @author NicolasADavid
  * @author Javatlacati

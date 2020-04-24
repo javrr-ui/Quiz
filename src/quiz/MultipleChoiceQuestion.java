@@ -11,7 +11,6 @@
 package quiz;
 
 import java.util.ArrayList;
-import java.util.Scanner;
 
 /**
  * A question with multiple choices.
@@ -19,14 +18,13 @@ import java.util.Scanner;
 public class MultipleChoiceQuestion extends Question {
 
     private ArrayList<String> choices;
-    private int correctAnswer;
 
     /**
      * Constructs a multiple choice question with no choices.
      */
     public MultipleChoiceQuestion(String vettedness) {
         super(vettedness);
-        choices = new ArrayList<String>();
+        choices = new ArrayList<>();
     }
 
     /**
@@ -53,7 +51,7 @@ public class MultipleChoiceQuestion extends Question {
     @Override
     public void setAnswer(String answer) {
         this.answer = answer;
-        correctAnswer = choices.indexOf(answer);
+//        int correctAnswer = choices.indexOf(answer);
     }
 
     @Override
@@ -61,16 +59,6 @@ public class MultipleChoiceQuestion extends Question {
         return answer;
     }
 
-//    /**
-//     * Takes an answer from input
-//     */
-//    public boolean takeAnswer() {
-//        String input;
-//        System.out.println("Enter the number of the answer");
-//        Scanner in = new Scanner(System.in); //Create new scanner for user input
-//        input = in.nextLine();
-//        return checkAnswer(input);
-//    }
     @Override
     public double checkQuestionProvidingAnswer(final String answer) {
         userAnswer = answer.replaceAll("\\s+", "");

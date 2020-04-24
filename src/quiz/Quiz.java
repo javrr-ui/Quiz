@@ -6,7 +6,6 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.net.URI;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -35,7 +34,7 @@ public class Quiz {
     /**
      *
      */
-    private List<Question> questions;
+    private final List<Question> questions;
     /**
      * Score obtained in the quiz.
      */
@@ -84,37 +83,35 @@ public class Quiz {
      * Reads a file and call the method that processes it to fill the quiz.
      */
     public void createQuestionsFromFile(String path, boolean isInJar) {
+        try (BufferedReader reader = createReader(path, isInJar)) {
+            if (reader == null) {
+                return;
+            }
+            parseQuestions(reader);
+        } catch (IOException ex) {
+            Logger.getLogger(Quiz.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
 
+    private BufferedReader createReader(String path, boolean isInJar) {
         BufferedReader reader;
         if (isInJar) {
             reader = new BufferedReader(new InputStreamReader(Thread.currentThread().getContextClassLoader().getResourceAsStream(path)));
         } else {
-            final URI rutaArchivo;
-            rutaArchivo = new File(path).toURI();
             try {
-                reader = new BufferedReader(new FileReader(new File(rutaArchivo)));
+                reader = new BufferedReader(new FileReader(new File(path)));
             } catch (FileNotFoundException e) {
-                Logger.getLogger(Quiz.class.getName()).log(Level.SEVERE, null, e);
-                return;
+                Logger.getLogger(Quiz.class.getName()).log(Level.SEVERE, "The specified file does not exist:" + path, e);
+                return null;
             }
         }
+        return reader;
+    }
 
-        try {
-
-            String thisLine;
-            while ((thisLine = reader.readLine()) != null) {
-                parseaPregunta(thisLine);
-            }
-        } catch (IOException ex) {
-            Logger.getLogger(Quiz.class.getName()).log(Level.SEVERE, null, ex);
-        } finally {
-            if (reader != null) {
-                try {
-                    reader.close();
-                } catch (IOException ex) {
-                    Logger.getLogger(Quiz.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            }
+    private void parseQuestions(BufferedReader reader) throws IOException {
+        String thisLine;
+        while ((thisLine = reader.readLine()) != null) {
+            parseQuestion(thisLine);
         }
     }
 
@@ -160,48 +157,64 @@ public class Quiz {
             System.out.printf(getBundle("quiz/resources/quiz").getString("TOTAL_POINTS"), score);
 
             //Was the answer vetted/trial and correct, partially correct, or incorrect?
-            int compare;
-
-            if (currentQuestion.gradeQuestion()) { //Question is vetted
-
-                //Count vetted questions
-                totalVetted++;
-
-                //Add to vetted score
-                vettedScore += puntosRespuesta;
-
-                //Was question correct, partially corrct, or incorrct?
-                compare = Double.compare(puntosRespuesta, 0.0);
-                if (compare > 0) {
-                    //Count correct/partial vetted
-                    totalCorrectVetted++;
-                } else {
-                    //Count incorrect vetted
-                    totalIncorrectVetted++;
-                }
-
-            } else { //Question is trial
-
-                //Count trial questions
-                totalTrial++;
-
-                //Add to trial score
-                trialScore += puntosRespuesta;
-
-                //Was question correct, partially correct, or incorrect?
-                compare = Double.compare(puntosRespuesta, 0.0);
-                if (compare > 0) {
-                    //Count correct/partial trial
-                    totalCorrectTrial++;
-                } else {
-                    //Count incorrect trial
-                    totalIncorrectTrial++;
-                }
-
+            if (currentQuestion.gradeQuestion()) {
+                countForVetted(puntosRespuesta);
+            } else {
+                countForTrial(puntosRespuesta);
             }
 
         }
 
+        //    /**
+//     * Takes an answer from input
+//     */
+//    public boolean takeAnswer() {
+//        String input;
+//        System.out.println("Enter the number of the answer");
+//        Scanner in = new Scanner(System.in); //Create new scanner for user input
+//        input = in.nextLine();
+//        return checkAnswer(input);
+//    }
+
+    }
+
+    private void countForVetted(double puntosRespuesta) {
+        //Count vetted questions
+        totalVetted++;
+
+        //Add to vetted score
+        vettedScore += puntosRespuesta;
+
+        //Was question correct, partially corrct, or incorrct?
+        //Question is vetted
+        int compare = Double.compare(puntosRespuesta, 0.0);
+        if (compare > 0) {
+            //Count correct/partial vetted
+            totalCorrectVetted++;
+        } else {
+            //Count incorrect vetted
+            totalIncorrectVetted++;
+        }
+    }
+
+    private void countForTrial(double puntosRespuesta) {
+
+        //Count trial questions
+        totalTrial++;
+
+        //Add to trial score
+        trialScore += puntosRespuesta;
+
+        //Was question correct, partially correct, or incorrect?
+        //Question is trial
+        int compare = Double.compare(puntosRespuesta, 0.0);
+        if (compare > 0) {
+            //Count correct/partial trial
+            totalCorrectTrial++;
+        } else {
+            //Count incorrect trial
+            totalIncorrectTrial++;
+        }
     }
 
     /**
@@ -317,91 +330,10 @@ public class Quiz {
         }
     }
 
-    /////////////////// setters/getters  //////////////////////
-    public List<Question> getQuestions() {
-        return questions;
-    }
-
-    public void setQuestions(final List<Question> questions) {
-        this.questions = questions;
-    }
-
-    public double getScore() {
-        return score;
-    }
-
-    public void setScore(final double score) {
-        this.score = score;
-    }
-
-    public double getVettedScore() {
-        return vettedScore;
-    }
-
-    public void setVettedScore(final double vettedScore) {
-        this.vettedScore = vettedScore;
-    }
-
-    public double getTrialScore() {
-        return trialScore;
-    }
-
-    public void setTrialScore(final double trialScore) {
-        this.trialScore = trialScore;
-    }
-
-    public int getTotalVetted() {
-        return totalVetted;
-    }
-
-    public void setTotalVetted(final int totalVetted) {
-        this.totalVetted = totalVetted;
-    }
-
-    public int getTotalTrial() {
-        return totalTrial;
-    }
-
-    public void setTotalTrial(final int totalTrial) {
-        this.totalTrial = totalTrial;
-    }
-
-    public int getTotalCorrectVetted() {
-        return totalCorrectVetted;
-    }
-
-    public void setTotalCorrectVetted(final int totalCorrectVetted) {
-        this.totalCorrectVetted = totalCorrectVetted;
-    }
-
-    public int getTotalIncorrectVetted() {
-        return totalIncorrectVetted;
-    }
-
-    public void setTotalIncorrectVetted(final int totalIncorrectVetted) {
-        this.totalIncorrectVetted = totalIncorrectVetted;
-    }
-
-    public int getTotalCorrectTrial() {
-        return totalCorrectTrial;
-    }
-
-    public void setTotalCorrectTrial(final int totalCorrectTrial) {
-        this.totalCorrectTrial = totalCorrectTrial;
-    }
-
-    public int getTotalIncorrectTrial() {
-        return totalIncorrectTrial;
-    }
-
-    public void setTotalIncorrectTrial(final int totalIncorrectTrial) {
-        this.totalIncorrectTrial = totalIncorrectTrial;
-    }
-
     /**
      * @param questionString the question fields split by @@
      */
-    private void parseaPregunta(final String questionString) {
+    private void parseQuestion(final String questionString) {
         final String[] questarray = questionString.split(FIELD_DIVIDER);
         String tipoPregunta = questarray[0];
         switch (tipoPregunta) {
