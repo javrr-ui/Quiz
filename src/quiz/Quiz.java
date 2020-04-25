@@ -263,11 +263,13 @@ public class Quiz {
     private void addMultipleChoiceQuestion(final List<Question> questions,
                                            final String vettedness, final String explanation, final String questionText, final int correctAnswerIdx,
                                            final String category,
+                                           final String difficulty,
                                            final String... answersTexts) {
         final MultipleChoiceQuestion choiceQuestion = new MultipleChoiceQuestion(vettedness);
         choiceQuestion.setExplanation(explanation);
         choiceQuestion.setText(questionText);
         choiceQuestion.setCategory(category);
+        choiceQuestion.setDifficulty(str2difficulty(difficulty));
         for (int i = 0; i < answersTexts.length; i++) {
             final String answerText = answersTexts[i];
             choiceQuestion.setChoice(answerText, i == correctAnswerIdx);
@@ -280,12 +282,13 @@ public class Quiz {
      */
     private void addMultipleAnswerQuestion(final List<Question> questions,
                                            final String vettedness, final String explanation, final String questionText,
-                                           final String category,
+                                           final String category, final String difficulty,
                                            final Map<String, Boolean> answerChoicesMap) {
         final MultipleAnswerQuestion choiceQuestion = new MultipleAnswerQuestion(vettedness);
         choiceQuestion.setExplanation(explanation);
         choiceQuestion.setText(questionText);
         choiceQuestion.setCategory(category);
+        choiceQuestion.setDifficulty(str2difficulty(difficulty));
         answerChoicesMap.forEach(choiceQuestion::setChoice);
         questions.add(choiceQuestion);
     }
@@ -295,12 +298,13 @@ public class Quiz {
      */
     private void addFillBlankQuestion(final List<Question> questions,
                                       final String vettedness, final String explanation, final String questionText,
-                                      final String category,
+                                      final String category, final String difficulty,
                                       final String... blanks) {
         final FillBlankQuestion fillBlankQuestion = new FillBlankQuestion(vettedness);
         fillBlankQuestion.setExplanation(explanation);
         fillBlankQuestion.setText(questionText);
         fillBlankQuestion.setCategory(category);
+        fillBlankQuestion.setDifficulty(str2difficulty(difficulty));
         for (final String blank : blanks) {
             fillBlankQuestion.setAnswer(blank);
         }
@@ -352,7 +356,7 @@ public class Quiz {
         String vettedness = "v".equals(questarray[1]) ? Question.VETTED : Question.TRIAL;
         String explanation = questarray[2];
         String category = questarray[3];
-        int difficulty = Integer.parseInt(questarray[4]);
+        String difficulty = questarray[4];
         String questionText = formateaPregunta(questarray[5]);
         switch (tipoPregunta) {
             case "MC": {
@@ -360,19 +364,19 @@ public class Quiz {
                 int correctAnswerIdx = Integer.parseInt(questarray[6]);
                 String[] answersTexts = Arrays.copyOfRange(questarray, 7, questarray.length);
                 addMultipleChoiceQuestion(questions, vettedness, explanation,
-                        questionText, correctAnswerIdx, category, answersTexts);
+                        questionText, correctAnswerIdx, category, difficulty, answersTexts);
                 break;
             }
             case "FB": {
                 //fill in the blanks
                 String[] blanks = Arrays.copyOfRange(questarray, 6, questarray.length);
-                addFillBlankQuestion(questions, vettedness, explanation, questionText, category, blanks);
+                addFillBlankQuestion(questions, vettedness, explanation, questionText, category, difficulty, blanks);
                 break;
             }
             case "MA": {
                 Map<String, Boolean> choices = parseChoicesMap(Arrays.copyOfRange(questarray, 6, questarray.length));
                 addMultipleAnswerQuestion(questions, vettedness, explanation, questionText,
-                        category, choices);
+                        category, difficulty, choices);
                 break;
             }
             default:
@@ -421,14 +425,38 @@ public class Quiz {
         }
         Scanner scanner = new Scanner(System.in);
         try {
-            selectedCategories = Arrays.stream(BLANKS.split(scanner.nextLine())).map(idxStr -> categories.get(Integer.parseInt(idxStr)-1)).filter(Objects::nonNull).distinct().collect(Collectors.toList());
+            selectedCategories = Arrays.stream(BLANKS.split(scanner.nextLine())).map(idxStr -> categories.get(Integer.parseInt(idxStr) - 1)).filter(Objects::nonNull).distinct().collect(Collectors.toList());
             System.out.println("You selected the categories:" + Arrays.toString(selectedCategories.toArray()));
             //filter questions by category
-            questions=questions.stream().filter(question -> selectedCategories.contains(question.getCategory())).collect(Collectors.toList());
+            questions = questions.stream().filter(question -> selectedCategories.contains(question.getCategory())).collect(Collectors.toList());
         } catch (Exception e) {
             System.err.println("problem reading the categories");
             e.printStackTrace();
             selectedCategories = Collections.emptyList();
+        }
+    }
+
+    public void askForDifficulty() {
+        System.out.println("Difficulty levels:");
+        System.out.println("0 - normal\n 1 - hard\n 2 - easy");
+        Scanner scanner = new Scanner(System.in);
+        List<Difficulty> selectedDifficulties = Arrays.stream(BLANKS.split(scanner.nextLine())).distinct()
+                .map(String::trim).map(Quiz::str2difficulty).collect(Collectors.toList());
+        System.out.println("You selected the categories:" + Arrays.toString(selectedDifficulties.toArray()));
+        //filter questions by category
+        questions = questions.stream().filter(question -> selectedDifficulties.contains(question.getDifficulty())).collect(Collectors.toList());
+    }
+
+    private static Difficulty str2difficulty(String idxStr) {
+        switch (idxStr) {
+            case "2":
+                return Difficulty.EASY;
+            case "0":
+                return Difficulty.NORMAL;
+            case "1":
+                return Difficulty.HARD;
+            default:
+                return Difficulty.NORMAL;
         }
     }
 }
