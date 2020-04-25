@@ -70,9 +70,9 @@ public class MultipleAnswerQuestion extends MultipleChoiceQuestion {
         ArrayList<String> answers = new ArrayList<>(tokens.length);
         Collections.addAll(answers, tokens);
 
-        double totRightAnswers = correctAnswers.size();
-        double totAnswers = tokens.length;
-        double wrongAnswers = tokens.length;
+        double totRightAnswers = (double) correctAnswers.size();
+        double totAnswers = (double) tokens.length;
+        double wrongAnswers = (double) tokens.length;
         double grade = 0.0;
 
         for (String answer : answers) {

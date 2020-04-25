@@ -38,7 +38,7 @@ public class FillBlankQuestion extends Question {
         userAnswer = daAnswer;
         return checkQuestion();
     }
-    String delims = "[ ]+";
+    private static final String delims = "[ ]+";
 
     @Override
     public double checkQuestion() {
@@ -47,7 +47,7 @@ public class FillBlankQuestion extends Question {
         final ArrayList<String> answers = new ArrayList<>(tokens.length);
         answers.addAll(Arrays.asList(tokens));
 
-        final double totRightAnswers = correctAnswers.size();
+        final double totRightAnswers = (double) correctAnswers.size();
         //final double totAnswers = tokens.length;
         double grade = 0.0;
 
@@ -65,6 +65,6 @@ public class FillBlankQuestion extends Question {
      */
     @Override
     protected double getMaxPoints() {
-        return 1;
+        return 1.0;
     }
 }

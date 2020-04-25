@@ -35,6 +35,8 @@ public class Quiz {
     private static final Pattern LINE_BREAK = Pattern.compile("\\\\n");
     private static final Pattern BLANKS = Pattern.compile("\\s+");
 
+    private static final Scanner scanner = new Scanner(System.in);
+
     private int maxQuestions = -1;
     /**
      *
@@ -100,7 +102,7 @@ public class Quiz {
         }
     }
 
-    private BufferedReader createReader(String path, boolean isInJar) {
+    private static BufferedReader createReader(String path, boolean isInJar) {
         BufferedReader reader;
         if (isInJar) {
             reader = new BufferedReader(new InputStreamReader(Thread.currentThread().getContextClassLoader().getResourceAsStream(path)));
@@ -133,7 +135,7 @@ public class Quiz {
                 = MessageFormat.format(getBundle("quiz/resources/quiz").getString("FOR_MULTIPLE_CHOICE"), new Object[]{});
         Collections.shuffle(questions);//pregunta aleatoriamente
         System.out.println(message);
-        final Scanner scanner = new Scanner(System.in);
+
         int questionsToAsk = getQuestionsToAsk();
         //For every question in questions
         for (int i = 0; i < questionsToAsk; i++) {
@@ -400,13 +402,12 @@ public class Quiz {
         return createAnswerChoicesMap(questarray, answerValidities);
     }
 
-    private String formateaPregunta(final String strPregunta) {
+    private static String formateaPregunta(final String strPregunta) {
         return LINE_BREAK.matcher(strPregunta).replaceAll("\n");
     }
 
     public void askForSubsetSize() {
         System.out.printf("Currently there are %d questions how many of them you want in the test?\n", questions.size());
-        Scanner scanner = new Scanner(System.in);
         try {
             maxQuestions = Integer.parseInt(scanner.nextLine());
         } catch (Exception e) {
@@ -419,11 +420,12 @@ public class Quiz {
     public void askForCategories() {
         List<String> categories = questions.stream().map(Question::getCategory).distinct().collect(Collectors.toList());
         System.out.printf("Currently there are %d categories of the questions, please write the number of the categories you want separated by spaces in the same line\n", categories.size());
+        StringBuilder stringBuilder = new StringBuilder(8);
         for (int i = 0; i < categories.size(); i++) {
             String category = categories.get(i);
-            System.out.println(new StringBuilder(5).append(i + 1).append(" - ").append(category).toString());
+            stringBuilder.append(i + 1).append(" - ").append(category).append("\n");
         }
-        Scanner scanner = new Scanner(System.in);
+        System.out.println(stringBuilder.toString());
         try {
             selectedCategories = Arrays.stream(BLANKS.split(scanner.nextLine())).map(idxStr -> categories.get(Integer.parseInt(idxStr) - 1)).filter(Objects::nonNull).distinct().collect(Collectors.toList());
             System.out.println("You selected the categories:" + Arrays.toString(selectedCategories.toArray()));
@@ -439,7 +441,6 @@ public class Quiz {
     public void askForDifficulty() {
         System.out.println("Difficulty levels:");
         System.out.println("0 - normal\n 1 - hard\n 2 - easy");
-        Scanner scanner = new Scanner(System.in);
         List<Difficulty> selectedDifficulties = Arrays.stream(BLANKS.split(scanner.nextLine())).distinct()
                 .map(String::trim).map(Quiz::str2difficulty).collect(Collectors.toList());
         System.out.println("You selected the categories:" + Arrays.toString(selectedDifficulties.toArray()));
@@ -451,10 +452,9 @@ public class Quiz {
         switch (idxStr) {
             case "2":
                 return Difficulty.EASY;
-            case "0":
-                return Difficulty.NORMAL;
             case "1":
                 return Difficulty.HARD;
+            case "0":
             default:
                 return Difficulty.NORMAL;
         }
