@@ -27,15 +27,16 @@ public class QuizAdmin extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        buttonGroup1 = new javax.swing.ButtonGroup();
-        buttonGroup2 = new javax.swing.ButtonGroup();
-        jPanel1 = new javax.swing.JPanel();
+        optionButtonsGroup = new javax.swing.ButtonGroup();
+        pnlDatosPregunta = new javax.swing.JPanel();
         lblEnunciado = new javax.swing.JLabel();
         txtEnunciado = new javax.swing.JTextField();
         lblTipoPregunta = new javax.swing.JLabel();
         cmbTipoPregunta = new javax.swing.JComboBox<>();
         lblOpciones = new javax.swing.JLabel();
+        lblOpciones.setVisible(false);
         pnlOpciones = new javax.swing.JPanel();
+        pnlOpciones.setVisible(false);
         agregarOpcion = new javax.swing.JButton();
         quitarOpcion = new javax.swing.JButton();
         pnlOpcionesRespuesta = new javax.swing.JScrollPane();
@@ -43,34 +44,34 @@ public class QuizAdmin extends javax.swing.JFrame {
         pnlRespuesta = new javax.swing.JPanel();
         scrollBlancos = new javax.swing.JScrollPane();
         txtRespuesta = new javax.swing.JTextArea();
-        jPanel2 = new javax.swing.JPanel();
-        jPanel3 = new javax.swing.JPanel();
+        pnlControles = new javax.swing.JPanel();
+        pnlQuestionCreationDeletion = new javax.swing.JPanel();
         btnQuitarPregunta = new javax.swing.JButton();
         btnAgregarPregunta = new javax.swing.JButton();
-        jPanel4 = new javax.swing.JPanel();
+        pnlQuestionNavigation = new javax.swing.JPanel();
         btnAnterior = new javax.swing.JButton();
         btnSiguente = new javax.swing.JButton();
         btnIrAUnaEspecífica = new javax.swing.JComboBox<>();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder("Datos de pregunta"));
-        jPanel1.setLayout(new java.awt.GridLayout(0, 2));
+        pnlDatosPregunta.setBorder(javax.swing.BorderFactory.createTitledBorder("Datos de pregunta"));
+        pnlDatosPregunta.setLayout(new java.awt.GridLayout(0, 2));
 
         lblEnunciado.setText("Enunciado");
-        jPanel1.add(lblEnunciado);
+        pnlDatosPregunta.add(lblEnunciado);
 
         txtEnunciado.setEditable(false);
-        jPanel1.add(txtEnunciado);
+        pnlDatosPregunta.add(txtEnunciado);
 
         lblTipoPregunta.setText("tipo de pregunta:");
-        jPanel1.add(lblTipoPregunta);
+        pnlDatosPregunta.add(lblTipoPregunta);
 
         cmbTipoPregunta.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Llenar el espacio en blanco", "Opción Múltiple", "Respuesta Múltiple" }));
-        jPanel1.add(cmbTipoPregunta);
+        pnlDatosPregunta.add(cmbTipoPregunta);
 
         lblOpciones.setText("opciones");
-        jPanel1.add(lblOpciones);
+        pnlDatosPregunta.add(lblOpciones);
 
         agregarOpcion.setText("+");
         agregarOpcion.setEnabled(false);
@@ -101,14 +102,14 @@ public class QuizAdmin extends javax.swing.JFrame {
                         .addComponent(agregarOpcion, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(quitarOpcion)
-                        .addGap(0, 37, Short.MAX_VALUE)))
+                        .addGap(0, 36, Short.MAX_VALUE)))
                 .addContainerGap())
         );
 
-        jPanel1.add(pnlOpciones);
+        pnlDatosPregunta.add(pnlOpciones);
 
         lblRespuesta.setText("respuesta");
-        jPanel1.add(lblRespuesta);
+        pnlDatosPregunta.add(lblRespuesta);
 
         pnlRespuesta.setMinimumSize(new java.awt.Dimension(100, 90));
         pnlRespuesta.setPreferredSize(new java.awt.Dimension(200, 90));
@@ -122,45 +123,44 @@ public class QuizAdmin extends javax.swing.JFrame {
 
         pnlRespuesta.add(scrollBlancos, java.awt.BorderLayout.CENTER);
 
-        jPanel1.add(pnlRespuesta);
+        pnlDatosPregunta.add(pnlRespuesta);
 
-        getContentPane().add(jPanel1, java.awt.BorderLayout.CENTER);
+        getContentPane().add(pnlDatosPregunta, java.awt.BorderLayout.CENTER);
 
-        jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder("Controles"));
-        jPanel2.setLayout(new java.awt.BorderLayout());
+        pnlControles.setBorder(javax.swing.BorderFactory.createTitledBorder("Controles"));
+        pnlControles.setLayout(new java.awt.BorderLayout());
 
-        jPanel3.setBorder(javax.swing.BorderFactory.createEmptyBorder(8, 8, 8, 8));
-        jPanel3.setLayout(new java.awt.BorderLayout());
+        pnlQuestionCreationDeletion.setBorder(javax.swing.BorderFactory.createEmptyBorder(8, 8, 8, 8));
+        pnlQuestionCreationDeletion.setLayout(new java.awt.BorderLayout());
 
         btnQuitarPregunta.setText("-");
         btnQuitarPregunta.setEnabled(false);
-        jPanel3.add(btnQuitarPregunta, java.awt.BorderLayout.EAST);
+        pnlQuestionCreationDeletion.add(btnQuitarPregunta, java.awt.BorderLayout.EAST);
 
         btnAgregarPregunta.setText("+");
         btnAgregarPregunta.setEnabled(false);
-        jPanel3.add(btnAgregarPregunta, java.awt.BorderLayout.WEST);
+        pnlQuestionCreationDeletion.add(btnAgregarPregunta, java.awt.BorderLayout.WEST);
 
-        jPanel2.add(jPanel3, java.awt.BorderLayout.NORTH);
+        pnlControles.add(pnlQuestionCreationDeletion, java.awt.BorderLayout.NORTH);
 
-        jPanel4.setBorder(javax.swing.BorderFactory.createEmptyBorder(8, 8, 8, 8));
-        jPanel4.setLayout(new java.awt.BorderLayout());
+        pnlQuestionNavigation.setBorder(javax.swing.BorderFactory.createEmptyBorder(8, 8, 8, 8));
+        pnlQuestionNavigation.setLayout(new java.awt.BorderLayout());
 
         btnAnterior.setText("<");
         btnAnterior.setEnabled(false);
-        jPanel4.add(btnAnterior, java.awt.BorderLayout.WEST);
+        pnlQuestionNavigation.add(btnAnterior, java.awt.BorderLayout.WEST);
 
         btnSiguente.setText(">");
         btnSiguente.setEnabled(false);
-        jPanel4.add(btnSiguente, java.awt.BorderLayout.EAST);
+        pnlQuestionNavigation.add(btnSiguente, java.awt.BorderLayout.EAST);
 
-        btnIrAUnaEspecífica.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
         btnIrAUnaEspecífica.setBorder(javax.swing.BorderFactory.createEmptyBorder(4, 4, 4, 4));
         btnIrAUnaEspecífica.setEnabled(false);
-        jPanel4.add(btnIrAUnaEspecífica, java.awt.BorderLayout.CENTER);
+        pnlQuestionNavigation.add(btnIrAUnaEspecífica, java.awt.BorderLayout.CENTER);
 
-        jPanel2.add(jPanel4, java.awt.BorderLayout.CENTER);
+        pnlControles.add(pnlQuestionNavigation, java.awt.BorderLayout.CENTER);
 
-        getContentPane().add(jPanel2, java.awt.BorderLayout.PAGE_END);
+        getContentPane().add(pnlControles, java.awt.BorderLayout.PAGE_END);
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
@@ -207,19 +207,18 @@ public class QuizAdmin extends javax.swing.JFrame {
     private javax.swing.JComboBox<String> btnIrAUnaEspecífica;
     private javax.swing.JButton btnQuitarPregunta;
     private javax.swing.JButton btnSiguente;
-    private javax.swing.ButtonGroup buttonGroup1;
-    private javax.swing.ButtonGroup buttonGroup2;
     private javax.swing.JComboBox<String> cmbTipoPregunta;
-    private javax.swing.JPanel jPanel1;
-    private javax.swing.JPanel jPanel2;
-    private javax.swing.JPanel jPanel3;
-    private javax.swing.JPanel jPanel4;
     private javax.swing.JLabel lblEnunciado;
     private javax.swing.JLabel lblOpciones;
     private javax.swing.JLabel lblRespuesta;
     private javax.swing.JLabel lblTipoPregunta;
+    private javax.swing.ButtonGroup optionButtonsGroup;
+    private javax.swing.JPanel pnlControles;
+    private javax.swing.JPanel pnlDatosPregunta;
     private javax.swing.JPanel pnlOpciones;
     private javax.swing.JScrollPane pnlOpcionesRespuesta;
+    private javax.swing.JPanel pnlQuestionCreationDeletion;
+    private javax.swing.JPanel pnlQuestionNavigation;
     private javax.swing.JPanel pnlRespuesta;
     private javax.swing.JButton quitarOpcion;
     private javax.swing.JScrollPane scrollBlancos;
