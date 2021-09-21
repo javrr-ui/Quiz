@@ -103,6 +103,7 @@ public class Quiz {
     }
 
     private static BufferedReader createReader(String path, boolean isInJar) {
+        System.out.println("Loading file: "+path);
         BufferedReader reader;
         if (isInJar) {
             reader = new BufferedReader(new InputStreamReader(Thread.currentThread().getContextClassLoader().getResourceAsStream(path)));
